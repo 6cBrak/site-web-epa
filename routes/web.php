@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\FormationSessionController;
 use App\Http\Controllers\Admin\PartenaireController;
 use App\Http\Controllers\Admin\ProgrammeController;
 use App\Http\Controllers\Admin\TeamMemberController;
+use App\Http\Controllers\ActualitePublicController;
 use App\Http\Controllers\CandidatureController;
 use App\Http\Controllers\FormationPublicController;
 use App\Http\Controllers\PageController;
@@ -22,6 +23,9 @@ Route::post('/contact', [PageController::class, 'contactStore'])->name('contact.
 
 Route::get('/formations', [FormationPublicController::class, 'index'])->name('formations.index');
 Route::get('/formations/{formation:slug}', [FormationPublicController::class, 'show'])->name('formations.show');
+
+Route::get('/actualites', [ActualitePublicController::class, 'index'])->name('actualites.index');
+Route::get('/actualites/{actualite:slug}', [ActualitePublicController::class, 'show'])->name('actualites.show');
 
 Route::get('/inscription', [CandidatureController::class, 'create'])->name('candidatures.create');
 Route::post('/inscription', [CandidatureController::class, 'store'])->name('candidatures.store');

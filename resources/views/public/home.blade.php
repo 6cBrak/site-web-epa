@@ -103,7 +103,7 @@
                 <h2 class="text-2xl font-bold text-center mb-12">Actualités</h2>
                 <div class="grid md:grid-cols-3 gap-8">
                     @foreach ($actualites as $actualite)
-                        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <a href="{{ route('actualites.show', $actualite) }}" class="block bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition">
                             @if ($actualite->image)
                                 <img src="{{ asset('storage/'.$actualite->image) }}" alt="" class="w-full h-40 object-cover">
                             @endif
@@ -111,8 +111,11 @@
                                 <h3 class="font-semibold mb-2">{{ $actualite->title_fr }}</h3>
                                 <p class="text-sm text-gray-500">{{ $actualite->excerpt_fr }}</p>
                             </div>
-                        </div>
+                        </a>
                     @endforeach
+                </div>
+                <div class="text-center mt-10">
+                    <a href="{{ route('actualites.index') }}" class="text-epa-red text-sm font-medium hover:underline">Voir toutes les actualités →</a>
                 </div>
             </div>
         </section>

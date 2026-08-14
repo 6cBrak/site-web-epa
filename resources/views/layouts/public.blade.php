@@ -33,6 +33,7 @@
                 <a href="{{ route('home') }}" class="hover:text-epa-red {{ request()->routeIs('home') ? 'text-epa-red' : 'text-gray-700' }}">Accueil</a>
                 <a href="{{ route('about') }}" class="hover:text-epa-red {{ request()->routeIs('about') ? 'text-epa-red' : 'text-gray-700' }}">Qui sommes-nous</a>
                 <a href="{{ route('formations.index') }}" class="hover:text-epa-red {{ request()->routeIs('formations.*') ? 'text-epa-red' : 'text-gray-700' }}">Nos formations</a>
+                <a href="{{ route('actualites.index') }}" class="hover:text-epa-red {{ request()->routeIs('actualites.*') ? 'text-epa-red' : 'text-gray-700' }}">Actualités</a>
                 <a href="{{ route('contact') }}" class="hover:text-epa-red {{ request()->routeIs('contact') ? 'text-epa-red' : 'text-gray-700' }}">Contact</a>
             </nav>
 
@@ -47,6 +48,7 @@
             <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'text-epa-red' : 'text-gray-600' }}">Accueil</a>
             <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'text-epa-red' : 'text-gray-600' }}">Qui sommes-nous</a>
             <a href="{{ route('formations.index') }}" class="{{ request()->routeIs('formations.*') ? 'text-epa-red' : 'text-gray-600' }}">Formations</a>
+            <a href="{{ route('actualites.index') }}" class="{{ request()->routeIs('actualites.*') ? 'text-epa-red' : 'text-gray-600' }}">Actualités</a>
             <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'text-epa-red' : 'text-gray-600' }}">Contact</a>
         </nav>
     </header>
