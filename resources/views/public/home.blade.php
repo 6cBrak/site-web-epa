@@ -118,6 +118,23 @@
         </section>
     @endif
 
+    {{-- Partenaires --}}
+    @if ($partenaires->isNotEmpty())
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <h2 class="text-2xl font-bold text-center mb-2">Nos partenaires</h2>
+            <p class="text-gray-500 text-center mb-10">Ils nous font confiance</p>
+            <div class="flex flex-wrap items-center justify-center gap-10">
+                @foreach ($partenaires as $partenaire)
+                    @if ($partenaire->logo)
+                        <img src="{{ asset('storage/'.$partenaire->logo) }}" alt="{{ $partenaire->name }}" class="h-12 object-contain grayscale hover:grayscale-0 transition">
+                    @else
+                        <span class="text-sm font-medium text-gray-500">{{ $partenaire->name }}</span>
+                    @endif
+                @endforeach
+            </div>
+        </section>
+    @endif
+
     {{-- CTA final --}}
     <section class="bg-epa-red">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-white">

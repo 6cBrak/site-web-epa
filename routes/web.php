@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\ActualiteController;
 use App\Http\Controllers\Admin\AntenneController;
+use App\Http\Controllers\Admin\CandidatureController as AdminCandidatureController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FormationController;
 use App\Http\Controllers\Admin\FormationSessionController;
+use App\Http\Controllers\Admin\PartenaireController;
 use App\Http\Controllers\Admin\ProgrammeController;
+use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\CandidatureController;
 use App\Http\Controllers\FormationPublicController;
 use App\Http\Controllers\PageController;
@@ -30,6 +34,13 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('programmes', ProgrammeController::class)->except('show');
     Route::resource('formations', FormationController::class)->except('show');
     Route::resource('formation-sessions', FormationSessionController::class)->except('show');
+
+    Route::get('candidatures/export', [AdminCandidatureController::class, 'export'])->name('candidatures.export');
+    Route::resource('candidatures', AdminCandidatureController::class)->only(['index', 'show', 'update', 'destroy']);
+
+    Route::resource('actualites', ActualiteController::class)->except('show');
+    Route::resource('team-members', TeamMemberController::class)->except('show');
+    Route::resource('partenaires', PartenaireController::class)->except('show');
 });
 
 Route::middleware('auth')->group(function () {

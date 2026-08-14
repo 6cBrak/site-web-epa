@@ -51,7 +51,9 @@ Squelette Laravel 12 en place avec le modèle de données complet (migrations + 
 
 Piège rencontré : les Mailables utilisant `<x-mail::message>` doivent déclarer `new Content(markdown: 'emails.xxx')`, pas `view:` — sinon erreur "No hint path defined for [mail]" (le namespace `mail::` n'est enregistré que par le renderer Markdown).
 
-Reste à faire (Phase 3+) : CRUD back-office pour Candidatures/Actualités/Équipe/Partenaires/Certificats/Codes promo/Chiffres clés (les modèles existent déjà), génération PDF de l'accusé de candidature, QR code certificats, traductions EN réelles (actuellement `title_en` = copie de `title_fr` dans le seed, et les pages publiques n'affichent que le contenu FR).
+**Back-office (Phase 3) fonctionnel** : gestion des Candidatures (liste filtrable par formation/antenne/statut/recherche, détail, changement de statut, téléchargement CV, export CSV), CRUD Actualités (bilingue, image, publication), CRUD Équipe/Formateurs (photo, bio bilingue), CRUD Partenaires (logo, catégorie). Sidebar admin mise à jour en conséquence.
+
+Reste à faire (Phase 4+) : pages publiques dédiées Actualités (liste/détail), Équipe et Partenaires (actuellement seul un teaser Actualités + logos Partenaires apparaissent sur l'accueil — pas de page dédiée), CRUD back-office pour Certificats/Codes promo/Chiffres clés (modèles déjà prêts), génération PDF de l'accusé de candidature, QR code certificats, traductions EN réelles (actuellement `title_en` = copie de `title_fr` dans le seed, et les pages publiques n'affichent que le contenu FR).
 
 ### Environnement local
 

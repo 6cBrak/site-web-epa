@@ -28,6 +28,10 @@
                         ['route' => 'admin.programmes.index', 'match' => 'admin.programmes.*', 'label' => 'Programmes'],
                         ['route' => 'admin.formations.index', 'match' => 'admin.formations.*', 'label' => 'Formations'],
                         ['route' => 'admin.formation-sessions.index', 'match' => 'admin.formation-sessions.*', 'label' => 'Sessions'],
+                        ['route' => 'admin.candidatures.index', 'match' => 'admin.candidatures.*', 'label' => 'Candidatures'],
+                        ['route' => 'admin.actualites.index', 'match' => 'admin.actualites.*', 'label' => 'Actualités'],
+                        ['route' => 'admin.team-members.index', 'match' => 'admin.team-members.*', 'label' => 'Équipe'],
+                        ['route' => 'admin.partenaires.index', 'match' => 'admin.partenaires.*', 'label' => 'Partenaires'],
                     ];
                 @endphp
 
