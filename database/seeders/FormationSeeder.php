@@ -67,7 +67,7 @@ class FormationSeeder extends Seeder
                     'programme_id' => $programme->id,
                     'title_fr' => $title,
                     'title_en' => $title,
-                    'published' => false,
+                    'published' => true,
                     'order' => $index + 1,
                 ]
             );

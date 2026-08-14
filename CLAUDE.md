@@ -47,7 +47,11 @@ Squelette Laravel 12 en place avec le modèle de données complet (migrations + 
 
 **Back-office (Phase 1) fonctionnel** : authentification (Laravel Breeze, sans auto-inscription — comptes créés manuellement), layout `/admin` avec sidebar (`resources/views/layouts/admin.blade.php` + composant `x-admin-layout`), CRUD complets et testés bout-en-bout pour Antennes, Programmes, Formations (upload image, liaison multi-antennes, champs bilingues FR/EN, publication) et Sessions de formation.
 
-Reste à faire (Phase 2+) : site public (accueil, fiches formation, inscription), CRUD back-office pour Candidatures/Actualités/Équipe/Partenaires/Certificats/Codes promo/Chiffres clés, emails, génération PDF/QR code, traductions EN réelles (actuellement `title_en` = copie de `title_fr` dans le seed).
+**Site public (Phase 2) fonctionnel** : layout public (`resources/views/layouts/public.blade.php` + composant `x-public-layout`, bouton WhatsApp flottant, footer avec antennes) — Accueil, Qui sommes-nous, Nos formations (liste filtrable par programme/antenne + fiche détail avec sessions/places restantes), Contact (formulaire → email), Inscription en ligne (formulaire complet type EPA avec Alpine.js pour le choix dynamique de session, upload CV conditionnel si "professionnel", code promo, envoi de deux emails via Markdown Mailables `CandidatureConfirmee`/`NouvelleCandidature`, page de confirmation, page de suivi de candidature par token). Tout testé bout-en-bout (curl) y compris les cas de validation (CV requis, code promo invalide).
+
+Piège rencontré : les Mailables utilisant `<x-mail::message>` doivent déclarer `new Content(markdown: 'emails.xxx')`, pas `view:` — sinon erreur "No hint path defined for [mail]" (le namespace `mail::` n'est enregistré que par le renderer Markdown).
+
+Reste à faire (Phase 3+) : CRUD back-office pour Candidatures/Actualités/Équipe/Partenaires/Certificats/Codes promo/Chiffres clés (les modèles existent déjà), génération PDF de l'accusé de candidature, QR code certificats, traductions EN réelles (actuellement `title_en` = copie de `title_fr` dans le seed, et les pages publiques n'affichent que le contenu FR).
 
 ### Environnement local
 

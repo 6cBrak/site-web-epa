@@ -5,12 +5,24 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FormationController;
 use App\Http\Controllers\Admin\FormationSessionController;
 use App\Http\Controllers\Admin\ProgrammeController;
+use App\Http\Controllers\CandidatureController;
+use App\Http\Controllers\FormationPublicController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/qui-sommes-nous', [PageController::class, 'about'])->name('about');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [PageController::class, 'contactStore'])->name('contact.store');
+
+Route::get('/formations', [FormationPublicController::class, 'index'])->name('formations.index');
+Route::get('/formations/{formation:slug}', [FormationPublicController::class, 'show'])->name('formations.show');
+
+Route::get('/inscription', [CandidatureController::class, 'create'])->name('candidatures.create');
+Route::post('/inscription', [CandidatureController::class, 'store'])->name('candidatures.store');
+Route::get('/inscription/merci/{candidature:tracking_token}', [CandidatureController::class, 'confirmation'])->name('candidatures.confirmation');
+Route::get('/suivi/{token}', [CandidatureController::class, 'track'])->name('candidatures.track');
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
