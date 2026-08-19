@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalizedFields;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Formation extends Model
 {
-    use HasFactory;
+    use HasFactory, HasLocalizedFields;
 
     protected $fillable = [
         'programme_id', 'title_fr', 'title_en', 'slug', 'image',
@@ -49,5 +50,30 @@ class Formation extends Model
     public function certificates(): HasMany
     {
         return $this->hasMany(Certificate::class);
+    }
+
+    public function getTitleAttribute(): ?string
+    {
+        return $this->localized('title');
+    }
+
+    public function getDescriptionAttribute(): ?string
+    {
+        return $this->localized('description');
+    }
+
+    public function getObjectivesAttribute(): ?string
+    {
+        return $this->localized('objectives');
+    }
+
+    public function getModulesAttribute(): ?string
+    {
+        return $this->localized('modules');
+    }
+
+    public function getPrerequisitesAttribute(): ?string
+    {
+        return $this->localized('prerequisites');
     }
 }

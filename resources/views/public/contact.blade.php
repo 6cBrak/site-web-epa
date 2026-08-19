@@ -1,10 +1,11 @@
-<x-public-layout title="Contact">
+@php use App\Models\Setting; @endphp
+<x-public-layout :title="Setting::text('contact_title')">
     <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h1 class="text-3xl font-bold mb-12 text-center">Contactez-nous</h1>
+        <h1 class="text-3xl font-bold mb-12 text-center">{{ Setting::text('contact_title') }}</h1>
 
         <div class="grid md:grid-cols-2 gap-12">
             <div>
-                <h2 class="font-semibold mb-4">Nos antennes</h2>
+                <h2 class="font-semibold mb-4">{{ Setting::text('contact_antennes_title') }}</h2>
                 <div class="space-y-6">
                     @foreach ($antennes as $antenne)
                         <div>
@@ -22,7 +23,7 @@
             </div>
 
             <div>
-                <h2 class="font-semibold mb-4">Envoyez-nous un message</h2>
+                <h2 class="font-semibold mb-4">{{ Setting::text('contact_form_title') }}</h2>
                 <form method="POST" action="{{ route('contact.store') }}" class="space-y-4">
                     @csrf
                     <div>

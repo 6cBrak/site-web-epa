@@ -1,10 +1,12 @@
 @php
+    use App\Models\Setting;
+
     $footerAntennes = \App\Models\Antenne::where('active', true)->orderBy('name')->get();
     $whatsappAntenne = $footerAntennes->first();
     $whatsappNumber = $whatsappAntenne ? preg_replace('/\D/', '', $whatsappAntenne->phone) : null;
 @endphp
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,37 +21,67 @@
 <body class="font-sans antialiased bg-white text-epa-black">
 
     {{-- Header --}}
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-100">
+    <header x-data="{ mobileOpen: false }" class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <a href="{{ route('home') }}" class="flex items-center gap-3">
-                <img src="{{ asset('images/logo.jpeg') }}" alt="EPA" class="h-12 w-12 rounded object-cover">
+            <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
+                <img src="{{ Setting::logoUrl() }}" alt="EPA" class="h-12 w-auto max-w-[9rem] object-contain">
                 <span class="hidden sm:block text-sm text-gray-500 leading-tight">
-                    Centre de formation<br>
-                    <span class="font-semibold text-epa-black">Informatique &amp; Action Humanitaire</span>
+                    {{ Setting::text('header_tagline_line1') }}<br>
+                    <span class="font-semibold text-epa-black">{{ Setting::text('header_tagline_line2') }}</span>
                 </span>
             </a>
 
             <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-                <a href="{{ route('home') }}" class="hover:text-epa-red {{ request()->routeIs('home') ? 'text-epa-red' : 'text-gray-700' }}">Accueil</a>
-                <a href="{{ route('about') }}" class="hover:text-epa-red {{ request()->routeIs('about') ? 'text-epa-red' : 'text-gray-700' }}">Qui sommes-nous</a>
-                <a href="{{ route('formations.index') }}" class="hover:text-epa-red {{ request()->routeIs('formations.*') ? 'text-epa-red' : 'text-gray-700' }}">Nos formations</a>
-                <a href="{{ route('actualites.index') }}" class="hover:text-epa-red {{ request()->routeIs('actualites.*') ? 'text-epa-red' : 'text-gray-700' }}">Actualités</a>
-                <a href="{{ route('contact') }}" class="hover:text-epa-red {{ request()->routeIs('contact') ? 'text-epa-red' : 'text-gray-700' }}">Contact</a>
+                <a href="{{ route('home') }}" class="hover:text-epa-red {{ request()->routeIs('home') ? 'text-epa-red' : 'text-gray-700' }}">{{ Setting::text('nav_home') }}</a>
+                <a href="{{ route('about') }}" class="hover:text-epa-red {{ request()->routeIs('about') ? 'text-epa-red' : 'text-gray-700' }}">{{ Setting::text('nav_about') }}</a>
+                <a href="{{ route('formations.index') }}" class="hover:text-epa-red {{ request()->routeIs('formations.*') ? 'text-epa-red' : 'text-gray-700' }}">{{ Setting::text('nav_formations') }}</a>
+                <a href="{{ route('actualites.index') }}" class="hover:text-epa-red {{ request()->routeIs('actualites.*') ? 'text-epa-red' : 'text-gray-700' }}">{{ Setting::text('nav_actualites') }}</a>
+                <a href="{{ route('contact') }}" class="hover:text-epa-red {{ request()->routeIs('contact') ? 'text-epa-red' : 'text-gray-700' }}">{{ Setting::text('nav_contact') }}</a>
             </nav>
 
-            <a href="{{ route('formations.index') }}"
-               class="inline-flex items-center px-5 py-2.5 rounded-md bg-epa-red text-white text-sm font-semibold hover:opacity-90 transition">
-                S'inscrire
-            </a>
+            <div class="flex items-center gap-3">
+                <div class="hidden md:flex items-center gap-1 text-xs font-semibold text-gray-400">
+                    <a href="{{ request()->fullUrlWithQuery(['lang' => 'fr']) }}" class="{{ app()->getLocale() === 'fr' ? 'text-epa-red' : 'hover:text-epa-black' }}">FR</a>
+                    <span>/</span>
+                    <a href="{{ request()->fullUrlWithQuery(['lang' => 'en']) }}" class="{{ app()->getLocale() === 'en' ? 'text-epa-red' : 'hover:text-epa-black' }}">EN</a>
+                </div>
+
+                <a href="{{ route('formations.index') }}"
+                   class="hidden sm:inline-flex items-center px-5 py-2.5 rounded-md bg-epa-red text-white text-sm font-semibold hover:opacity-90 transition">
+                    {{ Setting::text('nav_cta') }}
+                </a>
+
+                <button type="button" @click="mobileOpen = !mobileOpen" :aria-expanded="mobileOpen"
+                        class="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-md text-gray-700 hover:bg-gray-100"
+                        aria-label="Ouvrir le menu">
+                    <svg x-show="!mobileOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                    </svg>
+                    <svg x-show="mobileOpen" x-cloak xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
         </div>
 
         {{-- Mobile nav --}}
-        <nav class="md:hidden flex items-center justify-center gap-6 text-xs font-medium border-t border-gray-100 py-2">
-            <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'text-epa-red' : 'text-gray-600' }}">Accueil</a>
-            <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'text-epa-red' : 'text-gray-600' }}">Qui sommes-nous</a>
-            <a href="{{ route('formations.index') }}" class="{{ request()->routeIs('formations.*') ? 'text-epa-red' : 'text-gray-600' }}">Formations</a>
-            <a href="{{ route('actualites.index') }}" class="{{ request()->routeIs('actualites.*') ? 'text-epa-red' : 'text-gray-600' }}">Actualités</a>
-            <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'text-epa-red' : 'text-gray-600' }}">Contact</a>
+        <nav x-show="mobileOpen" x-cloak x-transition.opacity.duration.150ms @click.outside="mobileOpen = false"
+             class="md:hidden flex flex-col gap-1 text-sm font-medium border-t border-gray-100 px-4 py-3 bg-white">
+            <a href="{{ route('home') }}" @click="mobileOpen = false" class="px-3 py-2.5 rounded-md {{ request()->routeIs('home') ? 'text-epa-red bg-epa-red/5' : 'text-gray-700' }}">{{ Setting::text('nav_home') }}</a>
+            <a href="{{ route('about') }}" @click="mobileOpen = false" class="px-3 py-2.5 rounded-md {{ request()->routeIs('about') ? 'text-epa-red bg-epa-red/5' : 'text-gray-700' }}">{{ Setting::text('nav_about') }}</a>
+            <a href="{{ route('formations.index') }}" @click="mobileOpen = false" class="px-3 py-2.5 rounded-md {{ request()->routeIs('formations.*') ? 'text-epa-red bg-epa-red/5' : 'text-gray-700' }}">{{ Setting::text('nav_formations') }}</a>
+            <a href="{{ route('actualites.index') }}" @click="mobileOpen = false" class="px-3 py-2.5 rounded-md {{ request()->routeIs('actualites.*') ? 'text-epa-red bg-epa-red/5' : 'text-gray-700' }}">{{ Setting::text('nav_actualites') }}</a>
+            <a href="{{ route('contact') }}" @click="mobileOpen = false" class="px-3 py-2.5 rounded-md {{ request()->routeIs('contact') ? 'text-epa-red bg-epa-red/5' : 'text-gray-700' }}">{{ Setting::text('nav_contact') }}</a>
+
+            <div class="flex items-center gap-3 px-3 pt-2 text-xs font-semibold text-gray-400">
+                <a href="{{ request()->fullUrlWithQuery(['lang' => 'fr']) }}" class="{{ app()->getLocale() === 'fr' ? 'text-epa-red' : '' }}">FR</a>
+                <a href="{{ request()->fullUrlWithQuery(['lang' => 'en']) }}" class="{{ app()->getLocale() === 'en' ? 'text-epa-red' : '' }}">EN</a>
+            </div>
+
+            <a href="{{ route('candidatures.create') }}" @click="mobileOpen = false"
+               class="mt-2 text-center px-3 py-2.5 rounded-md bg-epa-red text-white font-semibold sm:hidden">
+                {{ Setting::text('nav_cta') }}
+            </a>
         </nav>
     </header>
 
@@ -70,8 +102,10 @@
     <footer class="bg-epa-black text-gray-300 mt-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
             <div class="md:col-span-1">
-                <img src="{{ asset('images/logo.jpeg') }}" alt="EPA" class="h-12 w-12 rounded object-cover mb-3">
-                <p class="text-sm text-gray-400">Former les acteurs du développement.</p>
+                <div class="inline-flex bg-white rounded-md p-2 mb-3">
+                    <img src="{{ Setting::logoUrl() }}" alt="EPA" class="h-10 w-auto max-w-[8rem] object-contain">
+                </div>
+                <p class="text-sm text-gray-400">{{ Setting::text('footer_tagline') }}</p>
             </div>
 
             @foreach ($footerAntennes as $antenne)
@@ -89,7 +123,7 @@
         </div>
 
         <div class="border-t border-white/10 py-4 text-center text-xs text-gray-500">
-            &copy; {{ now()->year }} EPA_BURKINA — Tous droits réservés.
+            &copy; {{ now()->year }} EPA_BURKINA — {{ Setting::text('footer_rights') }}.
         </div>
     </footer>
 

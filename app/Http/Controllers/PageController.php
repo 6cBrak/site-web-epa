@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Actualite;
 use App\Models\Antenne;
+use App\Models\HeroSlide;
 use App\Models\KeyStat;
 use App\Models\Partenaire;
 use App\Models\Programme;
@@ -17,6 +18,7 @@ class PageController extends Controller
     public function home(): View
     {
         return view('public.home', [
+            'heroSlides' => HeroSlide::where('active', true)->orderBy('order')->get(),
             'programmes' => Programme::where('active', true)->orderBy('order')->withCount('formations')->get(),
             'keyStats' => KeyStat::orderBy('order')->get(),
             'antennes' => Antenne::where('active', true)->orderBy('name')->get(),

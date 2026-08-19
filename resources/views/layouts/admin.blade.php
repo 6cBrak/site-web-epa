@@ -24,6 +24,7 @@
                 @php
                     $links = [
                         ['route' => 'admin.dashboard', 'match' => 'admin.dashboard', 'label' => 'Tableau de bord'],
+                        ['route' => 'admin.hero-slides.index', 'match' => 'admin.hero-slides.*', 'label' => 'Diaporama accueil'],
                         ['route' => 'admin.antennes.index', 'match' => 'admin.antennes.*', 'label' => 'Antennes'],
                         ['route' => 'admin.programmes.index', 'match' => 'admin.programmes.*', 'label' => 'Programmes'],
                         ['route' => 'admin.formations.index', 'match' => 'admin.formations.*', 'label' => 'Formations'],
@@ -32,6 +33,7 @@
                         ['route' => 'admin.actualites.index', 'match' => 'admin.actualites.*', 'label' => 'Actualités'],
                         ['route' => 'admin.team-members.index', 'match' => 'admin.team-members.*', 'label' => 'Équipe'],
                         ['route' => 'admin.partenaires.index', 'match' => 'admin.partenaires.*', 'label' => 'Partenaires'],
+                        ['route' => 'admin.settings.edit', 'match' => 'admin.settings.*', 'label' => 'Textes du site'],
                     ];
                 @endphp
 

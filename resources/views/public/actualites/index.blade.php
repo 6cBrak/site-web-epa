@@ -12,8 +12,8 @@
                     </div>
                     <div class="p-5">
                         <div class="text-xs text-gray-400 mb-2">{{ $actualite->published_at->translatedFormat('d F Y') }}</div>
-                        <h3 class="font-semibold mb-2 group-hover:text-epa-red transition">{{ $actualite->title_fr }}</h3>
-                        <p class="text-sm text-gray-500">{{ $actualite->excerpt_fr }}</p>
+                        <h3 class="font-semibold mb-2 group-hover:text-epa-red transition">{{ $actualite->title }}</h3>
+                        <p class="text-sm text-gray-500">{{ $actualite->excerpt }}</p>
                     </div>
                 </a>
             @empty

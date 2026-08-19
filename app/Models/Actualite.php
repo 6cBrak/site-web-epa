@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalizedFields;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Actualite extends Model
 {
-    use HasFactory;
+    use HasFactory, HasLocalizedFields;
 
     protected $fillable = [
         'title_fr', 'title_en', 'slug', 'image',
@@ -18,4 +19,19 @@ class Actualite extends Model
     protected $casts = [
         'published_at' => 'datetime',
     ];
+
+    public function getTitleAttribute(): ?string
+    {
+        return $this->localized('title');
+    }
+
+    public function getExcerptAttribute(): ?string
+    {
+        return $this->localized('excerpt');
+    }
+
+    public function getContentAttribute(): ?string
+    {
+        return $this->localized('content');
+    }
 }

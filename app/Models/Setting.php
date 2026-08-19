@@ -23,4 +23,22 @@ class Setting extends Model
     {
         static::query()->updateOrCreate(['key' => $key], ['value' => $value]);
     }
+
+    /**
+     * Get a bilingual content setting (stored as "{$key}_fr" / "{$key}_en"),
+     * falling back to French if the current locale's value is empty.
+     */
+    public static function text(string $key): string
+    {
+        $value = static::get($key.'_'.app()->getLocale());
+
+        return $value !== null && $value !== '' ? $value : (static::get($key.'_fr') ?? '');
+    }
+
+    public static function logoUrl(): string
+    {
+        $path = static::get('site_logo');
+
+        return $path ? asset('storage/'.$path) : asset('images/logo.jpeg');
+    }
 }

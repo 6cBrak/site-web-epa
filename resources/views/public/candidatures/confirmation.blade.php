@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-bold mb-4">Votre candidature a bien été envoyée !</h1>
         <p class="text-gray-600 mb-2">
             Merci {{ $candidature->first_name }}, nous avons bien reçu votre candidature pour la formation
-            <strong>{{ $candidature->formation->title_fr }}</strong>.
+            <strong>{{ $candidature->formation->title }}</strong>.
         </p>
         <p class="text-gray-600 mb-8">
             Un email de confirmation vous a été envoyé à <strong>{{ $candidature->email }}</strong>.

@@ -6,8 +6,10 @@ use App\Http\Controllers\Admin\CandidatureController as AdminCandidatureControll
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FormationController;
 use App\Http\Controllers\Admin\FormationSessionController;
+use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\PartenaireController;
 use App\Http\Controllers\Admin\ProgrammeController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\ActualitePublicController;
 use App\Http\Controllers\CandidatureController;
@@ -45,6 +47,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('actualites', ActualiteController::class)->except('show');
     Route::resource('team-members', TeamMemberController::class)->except('show');
     Route::resource('partenaires', PartenaireController::class)->except('show');
+    Route::resource('hero-slides', HeroSlideController::class)->except('show');
+
+    Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
 });
 
 Route::middleware('auth')->group(function () {

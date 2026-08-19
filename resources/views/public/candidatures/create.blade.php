@@ -57,7 +57,7 @@
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-epa-red focus:ring-epa-red">
                         <option value="">— Choisir —</option>
                         @foreach ($formations as $formation)
-                            <option value="{{ $formation->id }}">{{ $formation->title_fr }}</option>
+                            <option value="{{ $formation->id }}">{{ $formation->title }}</option>
                         @endforeach
                     </select>
                     <x-input-error :messages="$errors->get('formation_id')" class="mt-1" />

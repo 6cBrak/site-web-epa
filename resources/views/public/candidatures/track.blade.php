@@ -19,7 +19,7 @@
             </div>
             <div class="flex items-center justify-between mb-4">
                 <span class="text-sm text-gray-500">Formation</span>
-                <span class="text-sm font-medium">{{ $candidature->formation->title_fr }}</span>
+                <span class="text-sm font-medium">{{ $candidature->formation->title }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
                 <span class="text-sm text-gray-500">Antenne</span>

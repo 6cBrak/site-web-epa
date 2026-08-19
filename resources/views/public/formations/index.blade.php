@@ -12,7 +12,7 @@
             @foreach ($programmes as $programme)
                 <a href="{{ route('formations.index', ['programme' => $programme->slug, 'antenne' => $selectedAntenne]) }}"
                    class="px-4 py-1.5 rounded-full text-sm border {{ $selectedProgramme === $programme->slug ? 'bg-epa-red text-white border-epa-red' : 'border-gray-300 text-gray-600' }}">
-                    {{ $programme->name_fr }}
+                    {{ $programme->name }}
                 </a>
             @endforeach
         </div>
@@ -42,8 +42,8 @@
                         @endunless
                     </div>
                     <div class="p-5">
-                        <span class="text-xs font-medium text-epa-red uppercase">{{ $formation->programme->name_fr }}</span>
-                        <h3 class="font-semibold mt-1 mb-2 group-hover:text-epa-red transition">{{ $formation->title_fr }}</h3>
+                        <span class="text-xs font-medium text-epa-red uppercase">{{ $formation->programme->name }}</span>
+                        <h3 class="font-semibold mt-1 mb-2 group-hover:text-epa-red transition">{{ $formation->title }}</h3>
                         <div class="flex items-center gap-3 text-xs text-gray-500">
                             @if ($formation->duration)
                                 <span>{{ $formation->duration }}</span>

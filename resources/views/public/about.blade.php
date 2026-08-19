@@ -1,36 +1,28 @@
-<x-public-layout title="Qui sommes-nous">
+@php use App\Models\Setting; @endphp
+<x-public-layout :title="Setting::text('about_title')">
     <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h1 class="text-3xl font-bold mb-8 text-center">Qui sommes-nous ?</h1>
+        <h1 class="text-3xl font-bold mb-8 text-center">{{ Setting::text('about_title') }}</h1>
 
         <p class="text-gray-600 leading-relaxed mb-10">
-            <strong>EPA_BURKINA</strong> est un centre de formation professionnelle spécialisé dans les métiers de
-            l'Informatique &amp; de l'Action Humanitaire. Implanté au Burkina Faso depuis plusieurs années, EPA
-            répond aux besoins croissants en compétences qualifiées des ONG, associations et entreprises qui
-            contribuent au développement du pays. Grâce à son équipe de consultants formateurs nationaux et
-            internationaux, EPA met à disposition des experts de chaque domaine qui transmettent leur savoir-faire
-            et leurs expériences, pour garantir des formations professionnelles qualifiantes de qualité et orientées
-            vers le développement de chaque apprenant.
+            {{ Setting::text('about_intro') }}
         </p>
 
         <div class="grid md:grid-cols-2 gap-8 mb-16">
             <div class="p-6 rounded-xl bg-gray-50">
-                <h2 class="font-semibold text-epa-red mb-2">Vision</h2>
+                <h2 class="font-semibold text-epa-red mb-2">{{ Setting::text('about_vision_title') }}</h2>
                 <p class="text-sm text-gray-600">
-                    Devenir un acteur de référence en matière de formation innovante et technique dans les domaines
-                    de l'action humanitaire et de l'informatique sur le continent africain.
+                    {{ Setting::text('about_vision_text') }}
                 </p>
             </div>
             <div class="p-6 rounded-xl bg-gray-50">
-                <h2 class="font-semibold text-epa-red mb-2">Mission</h2>
+                <h2 class="font-semibold text-epa-red mb-2">{{ Setting::text('about_mission_title') }}</h2>
                 <p class="text-sm text-gray-600">
-                    Former à travers toute l'Afrique des jeunes professionnels compétents, éthiques et responsables,
-                    capables d'agir efficacement face aux enjeux majeurs du continent tout en contribuant activement
-                    à son développement durable.
+                    {{ Setting::text('about_mission_text') }}
                 </p>
             </div>
         </div>
 
-        <h2 class="text-xl font-semibold mb-6 text-center">Nos antennes</h2>
+        <h2 class="text-xl font-semibold mb-6 text-center">{{ Setting::text('about_antennes_title') }}</h2>
         <div class="grid md:grid-cols-3 gap-6">
             @foreach ($antennes as $antenne)
                 <div class="p-5 rounded-xl border border-gray-100">

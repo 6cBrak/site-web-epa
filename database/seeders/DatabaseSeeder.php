@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             AntenneSeeder::class,
             ProgrammeSeeder::class,
             FormationSeeder::class,
+            SettingSeeder::class,
         ]);
     }
 }

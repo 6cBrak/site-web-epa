@@ -1,11 +1,11 @@
-<x-public-layout :title="$formation->title_fr">
+<x-public-layout :title="$formation->title">
     <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <a href="{{ route('formations.index') }}" class="text-sm text-gray-500 hover:text-epa-red">&larr; Toutes les formations</a>
 
         <div class="mt-4 flex items-center gap-3">
-            <span class="text-xs font-medium text-epa-red uppercase">{{ $formation->programme->name_fr }}</span>
+            <span class="text-xs font-medium text-epa-red uppercase">{{ $formation->programme->name }}</span>
         </div>
-        <h1 class="text-3xl font-bold mt-2 mb-6">{{ $formation->title_fr }}</h1>
+        <h1 class="text-3xl font-bold mt-2 mb-6">{{ $formation->title }}</h1>
 
         @if ($formation->image)
             <img src="{{ asset('storage/'.$formation->image) }}" alt="" class="w-full h-72 object-cover rounded-xl mb-10">
@@ -13,31 +13,31 @@
 
         <div class="grid md:grid-cols-3 gap-10">
             <div class="md:col-span-2 space-y-8">
-                @if ($formation->description_fr)
+                @if ($formation->description)
                     <div>
                         <h2 class="font-semibold mb-2">Description</h2>
-                        <p class="text-gray-600 text-sm leading-relaxed">{{ $formation->description_fr }}</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">{{ $formation->description }}</p>
                     </div>
                 @endif
 
-                @if ($formation->objectives_fr)
+                @if ($formation->objectives)
                     <div>
                         <h2 class="font-semibold mb-2">Objectifs pédagogiques</h2>
-                        <p class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{{ $formation->objectives_fr }}</p>
+                        <p class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{{ $formation->objectives }}</p>
                     </div>
                 @endif
 
-                @if ($formation->modules_fr)
+                @if ($formation->modules)
                     <div>
                         <h2 class="font-semibold mb-2">Programme détaillé</h2>
-                        <p class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{{ $formation->modules_fr }}</p>
+                        <p class="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{{ $formation->modules }}</p>
                     </div>
                 @endif
 
-                @if ($formation->prerequisites_fr)
+                @if ($formation->prerequisites)
                     <div>
                         <h2 class="font-semibold mb-2">Prérequis</h2>
-                        <p class="text-gray-600 text-sm leading-relaxed">{{ $formation->prerequisites_fr }}</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">{{ $formation->prerequisites }}</p>
                     </div>
                 @endif
 
@@ -46,8 +46,8 @@
                         <h2 class="font-semibold mb-4">Prochaines sessions</h2>
                         <div class="space-y-3">
                             @foreach ($formation->sessions as $session)
-                                <div class="flex items-center justify-between p-4 rounded-lg border border-gray-100">
-                                    <div>
+                                <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 p-4 rounded-lg border border-gray-100">
+                                    <div class="min-w-0">
                                         <div class="font-medium text-sm">{{ $session->start_date->translatedFormat('d F Y') }} — {{ $session->antenne->name }}</div>
                                         <div class="text-xs text-gray-500 mt-1">
                                             {{ str_replace('_', ' ', ucfirst($session->modality)) }}
@@ -56,7 +56,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <span class="text-xs font-medium text-epa-red" data-countdown="{{ $session->start_date->toDateString() }}">
+                                    <span class="text-xs font-medium text-epa-red shrink-0" data-countdown="{{ $session->start_date->toDateString() }}">
                                         {{ $session->start_date->isFuture() ? 'Dans '.now()->diffInDays($session->start_date).' jour(s)' : 'En cours' }}
                                     </span>
                                 </div>
