@@ -31,6 +31,7 @@
                         ['route' => 'admin.formation-sessions.index', 'match' => 'admin.formation-sessions.*', 'label' => 'Sessions'],
                         ['route' => 'admin.candidatures.index', 'match' => 'admin.candidatures.*', 'label' => 'Candidatures'],
                         ['route' => 'admin.actualites.index', 'match' => 'admin.actualites.*', 'label' => 'Actualités'],
+                        ['route' => 'admin.comments.index', 'match' => 'admin.comments.*', 'label' => 'Commentaires'],
                         ['route' => 'admin.team-members.index', 'match' => 'admin.team-members.*', 'label' => 'Équipe'],
                         ['route' => 'admin.partenaires.index', 'match' => 'admin.partenaires.*', 'label' => 'Partenaires'],
                         ['route' => 'admin.settings.edit', 'match' => 'admin.settings.*', 'label' => 'Textes du site'],

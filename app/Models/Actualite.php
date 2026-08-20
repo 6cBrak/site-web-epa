@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\HasLocalizedFields;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Actualite extends Model
 {
@@ -33,5 +34,15 @@ class Actualite extends Model
     public function getContentAttribute(): ?string
     {
         return $this->localized('content');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function approvedComments(): HasMany
+    {
+        return $this->comments()->where('approved', true)->latest();
     }
 }

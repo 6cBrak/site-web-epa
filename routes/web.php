@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ActualiteController;
 use App\Http\Controllers\Admin\AntenneController;
 use App\Http\Controllers\Admin\CandidatureController as AdminCandidatureController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FormationController;
 use App\Http\Controllers\Admin\FormationSessionController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\ActualitePublicController;
 use App\Http\Controllers\CandidatureController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FormationPublicController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
@@ -28,6 +30,9 @@ Route::get('/formations/{formation:slug}', [FormationPublicController::class, 's
 
 Route::get('/actualites', [ActualitePublicController::class, 'index'])->name('actualites.index');
 Route::get('/actualites/{actualite:slug}', [ActualitePublicController::class, 'show'])->name('actualites.show');
+Route::post('/actualites/{actualite:slug}/commentaires', [CommentController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('actualites.comments.store');
 
 Route::get('/inscription', [CandidatureController::class, 'create'])->name('candidatures.create');
 Route::post('/inscription', [CandidatureController::class, 'store'])->name('candidatures.store');
@@ -48,6 +53,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('team-members', TeamMemberController::class)->except('show');
     Route::resource('partenaires', PartenaireController::class)->except('show');
     Route::resource('hero-slides', HeroSlideController::class)->except('show');
+
+    Route::resource('comments', AdminCommentController::class)->only(['index', 'update', 'destroy']);
 
     Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
