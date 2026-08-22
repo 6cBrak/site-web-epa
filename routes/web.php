@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ActualiteController;
 use App\Http\Controllers\Admin\AntenneController;
+use App\Http\Controllers\Admin\AssistantLeadController;
 use App\Http\Controllers\Admin\CandidatureController as AdminCandidatureController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -48,6 +49,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('candidatures/export', [AdminCandidatureController::class, 'export'])->name('candidatures.export');
     Route::resource('candidatures', AdminCandidatureController::class)->only(['index', 'show', 'update', 'destroy']);
+
+    Route::resource('assistant-leads', AssistantLeadController::class)->only(['index', 'show', 'update', 'destroy']);
 
     Route::resource('actualites', ActualiteController::class)->except('show');
     Route::resource('team-members', TeamMemberController::class)->except('show');

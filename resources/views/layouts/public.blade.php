@@ -138,5 +138,8 @@
         </a>
     @endif
 
+    {{-- Assistant IA --}}
+    @include('partials.assistant-widget')
+
 </body>
 </html>
