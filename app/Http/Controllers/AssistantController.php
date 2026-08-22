@@ -7,6 +7,7 @@ use App\Models\AssistantConversation;
 use App\Models\AssistantLeadCapture;
 use App\Models\AssistantMessage;
 use App\Models\Antenne;
+use App\Models\Setting;
 use App\Services\AssistantKnowledgeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,6 +30,8 @@ class AssistantController extends Controller
 
     protected const RECOMMENDATION_CARD_TOOL = 'show_recommendation_card';
 
+    protected const DEFAULT_ASSISTANT_NAME = 'Aïcha';
+
     public function __construct(protected AssistantKnowledgeService $knowledge)
     {
     }
@@ -41,14 +44,16 @@ class AssistantController extends Controller
 
         $conversation = AssistantConversation::where('session_id', $validated['session_id'])->first();
 
+        $empty = ['messages' => [], 'visitor_name' => null, 'visitor_contact' => null, 'last_interest' => null];
+
         if (! $conversation) {
-            return response()->json(['messages' => [], 'visitor_name' => null]);
+            return response()->json($empty);
         }
 
         $lastMessage = $conversation->messages()->latest('id')->first();
 
         if (! $lastMessage || $lastMessage->created_at->lt(now()->subDays(self::HISTORY_EXPIRY_DAYS))) {
-            return response()->json(['messages' => [], 'visitor_name' => null]);
+            return response()->json($empty);
         }
 
         $messages = $conversation->messages()
@@ -62,9 +67,14 @@ class AssistantController extends Controller
                 'content' => $message->content,
             ]);
 
-        $visitorName = $conversation->leadsCaptures()->latest('id')->value('name');
+        $lastLead = $conversation->leadsCaptures()->latest('id')->first(['name', 'contact', 'formation_interest']);
 
-        return response()->json(['messages' => $messages, 'visitor_name' => $visitorName]);
+        return response()->json([
+            'messages' => $messages,
+            'visitor_name' => $lastLead?->name,
+            'visitor_contact' => $lastLead?->contact,
+            'last_interest' => $lastLead?->formation_interest,
+        ]);
     }
 
     public function handleMessage(Request $request): StreamedResponse
@@ -214,19 +224,24 @@ class AssistantController extends Controller
 
         $quickReplies = [];
         $card = null;
+        $lead = null;
 
         foreach ($toolBlocks as $block) {
             $input = json_decode($block['json'], true) ?: [];
 
             match ($block['name']) {
-                self::CAPTURE_LEAD_TOOL => $this->storeLead($conversation->id, $input),
+                self::CAPTURE_LEAD_TOOL => $lead = $this->storeLead($conversation->id, $input),
                 self::SUGGEST_REPLIES_TOOL => $quickReplies = array_values(array_filter((array) ($input['replies'] ?? []))),
                 self::RECOMMENDATION_CARD_TOOL => $card = $this->buildCard($input),
                 default => null,
             };
         }
 
-        $this->emitSse('done', ['quick_replies' => $quickReplies, 'card' => $card]);
+        $this->emitSse('done', [
+            'quick_replies' => $quickReplies,
+            'card' => $card,
+            'lead' => $lead ? ['name' => $lead->name, 'contact' => $lead->contact] : null,
+        ]);
     }
 
     protected function emitSse(string $event, array $data): void
@@ -274,10 +289,10 @@ class AssistantController extends Controller
         ];
     }
 
-    protected function storeLead(int $conversationId, array $input): void
+    protected function storeLead(int $conversationId, array $input): ?AssistantLeadCapture
     {
         if (empty($input['name']) || empty($input['contact'])) {
-            return;
+            return null;
         }
 
         $lead = AssistantLeadCapture::create([
@@ -296,6 +311,8 @@ class AssistantController extends Controller
                 Log::error('Échec envoi email récap prospect assistant', ['lead_id' => $lead->id, 'error' => $e->getMessage()]);
             }
         }
+
+        return $lead;
     }
 
     protected function captureLeadTool(): array
@@ -365,11 +382,12 @@ class AssistantController extends Controller
         $leadTool = self::CAPTURE_LEAD_TOOL;
         $repliesTool = self::SUGGEST_REPLIES_TOOL;
         $cardTool = self::RECOMMENDATION_CARD_TOOL;
+        $assistantName = Setting::get('chat_assistant_name', self::DEFAULT_ASSISTANT_NAME);
 
         return <<<PROMPT
-Tu es l'assistant virtuel du site web d'EPA_BURKINA, un centre de formation professionnelle en Informatique et Action Humanitaire au Burkina Faso (antennes à Ouagadougou, Bobo-Dioulasso et Dori/Sahel).
+Tu es {$assistantName}, conseillère en formation chez EPA_BURKINA, un centre de formation professionnelle en Informatique et Action Humanitaire au Burkina Faso (antennes à Ouagadougou, Bobo-Dioulasso et Dori/Sahel). Tu réponds sur le chat du site web.
 
-RÔLE : tu es le meilleur commercial et marketeur d'EPA_BURKINA, en poste sur le chat du site. Tu n'es pas un robot de FAQ qui attend les questions : tu mènes la conversation comme un vrai vendeur terrain — tu comprends le besoin, tu vends la valeur d'EPA, et tu ne laisses jamais un visiteur intéressé repartir sans que tu aies tenté d'obtenir son prénom et un moyen de le recontacter (téléphone ou email).
+RÔLE : tu es la meilleure commerciale et marketeuse d'EPA_BURKINA. Tu n'es pas un robot de FAQ qui attend les questions : tu mènes la conversation comme une vraie conseillère terrain — tu comprends le besoin, tu vends la valeur d'EPA, et tu ne laisses jamais un visiteur intéressé repartir sans que tu aies tenté d'obtenir son prénom et un moyen de le recontacter (téléphone ou email). Présente-toi par ton prénom dès ton tout premier message si ce n'est pas déjà fait.
 
 STYLE : chaleureux, enthousiaste, vivant — donne envie de continuer à discuter, comme un excellent conseiller qu'on a plaisir à consulter, pas un formulaire. Utilise le prénom du visiteur dès que tu le connais. Reste concis (widget de chat, pas de pavés), mais jamais froid ou robotique. Varie tes formulations, ne répète pas les mêmes tournures d'un message à l'autre. Chaque réponse se termine par une question ou une prochaine étape claire — jamais un simple point final qui referme la conversation.
 

@@ -20,11 +20,20 @@
 
         <div class="bg-white rounded-lg shadow p-6">
             <h2 class="font-semibold text-gray-800 mb-4">Réglages généraux</h2>
-            <div class="max-w-xs">
-                <x-input-label for="hero_slide_delay_seconds" value="Délai entre les images du diaporama d'accueil (secondes)" />
-                <x-text-input id="hero_slide_delay_seconds" name="hero_slide_delay_seconds" type="number" step="0.5" min="1" max="30"
-                               class="mt-1 block w-full" value="{{ old('hero_slide_delay_seconds', $heroSlideDelay) }}" required />
-                <x-input-error :messages="$errors->get('hero_slide_delay_seconds')" class="mt-1" />
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <x-input-label for="hero_slide_delay_seconds" value="Délai entre les images du diaporama d'accueil (secondes)" />
+                    <x-text-input id="hero_slide_delay_seconds" name="hero_slide_delay_seconds" type="number" step="0.5" min="1" max="30"
+                                   class="mt-1 block w-full" value="{{ old('hero_slide_delay_seconds', $heroSlideDelay) }}" required />
+                    <x-input-error :messages="$errors->get('hero_slide_delay_seconds')" class="mt-1" />
+                </div>
+                <div>
+                    <x-input-label for="chat_assistant_name" value="Prénom de l'assistante du chat" />
+                    <x-text-input id="chat_assistant_name" name="chat_assistant_name" type="text" maxlength="50"
+                                   class="mt-1 block w-full" value="{{ old('chat_assistant_name', $chatAssistantName) }}" required />
+                    <p class="mt-1 text-xs text-gray-500">Utilisé dans le widget de chat du site et dans les réponses de l'assistant IA.</p>
+                    <x-input-error :messages="$errors->get('chat_assistant_name')" class="mt-1" />
+                </div>
             </div>
         </div>
 

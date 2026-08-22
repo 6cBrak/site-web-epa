@@ -1,3 +1,6 @@
+@php
+    $chatAssistantName = \App\Models\Setting::get('chat_assistant_name', 'Aïcha');
+@endphp
 <div
     x-data="assistantWidget()"
     x-init="init()"
@@ -27,10 +30,10 @@
 
         <button
             type="button"
-            @click="open = !open; teaserVisible = false"
+            @click="toggleOpen()"
             class="flex items-center justify-center w-14 h-14 rounded-full bg-epa-red text-white shadow-lg hover:opacity-90 transition"
             :aria-expanded="open"
-            aria-label="Ouvrir l'assistant EPA"
+            aria-label="Ouvrir le chat avec {{ $chatAssistantName }}"
         >
             <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.75 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.75 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -52,9 +55,9 @@
     >
         {{-- Header --}}
         <div class="bg-epa-red text-white px-4 py-3 flex items-center justify-between gap-2 shrink-0">
-            <span class="font-semibold text-sm">Assistant EPA_BURKINA</span>
+            <span class="font-semibold text-sm">{{ $chatAssistantName }} · EPA_BURKINA</span>
             @if ($whatsappNumber)
-                <a href="https://wa.me/{{ $whatsappNumber }}" target="_blank" rel="noopener"
+                <a :href="whatsappHref()" target="_blank" rel="noopener"
                    class="flex items-center justify-center w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 transition"
                    aria-label="Discuter directement sur WhatsApp" title="Discuter sur WhatsApp">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
@@ -75,7 +78,7 @@
                         x-transition:enter-end="opacity-100 translate-y-0"
                     >
                         <template x-if="msg.role === 'assistant'">
-                            <div class="w-6 h-6 rounded-full bg-epa-red text-white flex items-center justify-center shrink-0 text-[10px] font-bold">EP</div>
+                            <div class="w-6 h-6 rounded-full bg-epa-red text-white flex items-center justify-center shrink-0 text-[10px] font-bold">{{ mb_strtoupper(mb_substr($chatAssistantName, 0, 1)) }}</div>
                         </template>
                         <div
                             :class="msg.role === 'user'
@@ -102,7 +105,7 @@
                                 <div x-show="msg.card.next_session">🗓️ <span x-text="msg.card.next_session"></span></div>
                             </div>
                             <a
-                                :href="msg.card.slug ? ('/inscription?formation=' + msg.card.slug) : '/inscription'"
+                                :href="withKnownInfo(msg.card.slug ? ('/inscription?formation=' + msg.card.slug) : '/inscription')"
                                 class="mt-2.5 inline-flex items-center justify-center w-full px-3 py-2 rounded-md bg-epa-red text-white text-xs font-semibold hover:opacity-90 transition"
                             >
                                 S'inscrire à cette formation
@@ -138,7 +141,7 @@
             </div>
 
             <div x-show="loading" class="flex justify-start items-end gap-2">
-                <div class="w-6 h-6 rounded-full bg-epa-red text-white flex items-center justify-center shrink-0 text-[10px] font-bold">EP</div>
+                <div class="w-6 h-6 rounded-full bg-epa-red text-white flex items-center justify-center shrink-0 text-[10px] font-bold">{{ mb_strtoupper(mb_substr($chatAssistantName, 0, 1)) }}</div>
                 <div class="bg-white border border-gray-200 rounded-2xl rounded-bl-sm px-3 py-2.5 flex items-center gap-1">
                     <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce [animation-delay:-0.3s]"></span>
                     <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce [animation-delay:-0.15s]"></span>
@@ -179,8 +182,10 @@
             loading: false,
             teaserVisible: false,
             teaserText: 'Une question sur nos formations ? 👋',
+            knownLead: null,
+            exitPromptShown: false,
             messages: [
-                { role: 'assistant', content: "Bonjour ! Je suis l'assistant EPA_BURKINA. Posez-moi vos questions sur nos formations, nos prix ou nos antennes." },
+                { role: 'assistant', content: "Bonjour ! Je suis " + {!! \Illuminate\Support\Js::from($chatAssistantName) !!} + ", conseillère chez EPA_BURKINA 😊 Posez-moi vos questions sur nos formations, nos prix ou nos antennes." },
             ],
             suggestions: [
                 'Voir les formations disponibles',
@@ -190,6 +195,10 @@
             ],
 
             async init() {
+                this.$watch('open', (value) => {
+                    if (value) this.scrollToBottom();
+                });
+
                 const storedSessionId = this.loadStoredSessionId();
                 let returning = false;
 
@@ -244,15 +253,23 @@
 
                     if (data.messages && data.messages.length) {
                         this.messages = data.messages;
+
+                        if (data.visitor_name) {
+                            this.knownLead = { name: data.visitor_name, contact: data.visitor_contact || '' };
+                        }
+
+                        const topic = data.last_interest || this.lastMeaningfulUserMessage();
+                        const greeting = data.visitor_name ? `Contente de vous revoir, ${data.visitor_name} !` : 'Contente de vous revoir !';
+
                         this.messages.push({
                             role: 'assistant',
-                            content: data.visitor_name
-                                ? `Content de vous revoir, ${data.visitor_name} ! 👋 Comment puis-je vous aider aujourd'hui ?`
-                                : "Content de vous revoir ! 👋 Une nouvelle question sur nos formations ?",
+                            content: topic
+                                ? `${greeting} 👋 La dernière fois, on parlait de : « ${topic} ». On continue sur ce sujet, ou autre chose aujourd'hui ?`
+                                : `${greeting} 👋 Comment puis-je vous aider aujourd'hui ?`,
                         });
                         this.teaserText = data.visitor_name
                             ? `Bon retour, ${data.visitor_name} ! 👋`
-                            : 'Content de vous revoir ! 👋';
+                            : 'Contente de vous revoir ! 👋';
 
                         return true;
                     }
@@ -270,6 +287,72 @@
                 this.send();
             },
 
+            lastMeaningfulUserMessage() {
+                const candidate = [...this.messages].reverse().find((m) => m.role === 'user' && m.content && m.content.trim().length > 8);
+
+                if (!candidate) return null;
+
+                const text = candidate.content.trim();
+
+                return text.length > 70 ? text.slice(0, 70).trim() + '…' : text;
+            },
+
+            toggleOpen() {
+                this.teaserVisible = false;
+
+                if (this.open) {
+                    const hasSubstantialInterest = this.messages.length >= 4 && !this.knownLead;
+
+                    if (hasSubstantialInterest && !this.exitPromptShown) {
+                        this.exitPromptShown = true;
+                        this.messages.push({
+                            role: 'assistant',
+                            content: "Avant que tu partes 😊 Peux-tu me laisser ton prénom et un contact (téléphone ou email) ? Je te ferai suivre plus d'infos sans que tu aies à revenir chercher.",
+                        });
+                        this.scrollToBottom();
+                        return;
+                    }
+                }
+
+                this.open = !this.open;
+            },
+
+            whatsappHref() {
+                const base = 'https://wa.me/{{ $whatsappNumber }}';
+                const lastUserMessage = [...this.messages].reverse().find((m) => m.role === 'user');
+
+                if (!lastUserMessage) return base;
+
+                const text = `Bonjour, je viens de discuter avec l'assistant du site EPA à propos de : "${lastUserMessage.content.slice(0, 200)}"`;
+
+                return base + '?text=' + encodeURIComponent(text);
+            },
+
+            withKnownInfo(url) {
+                if (!url.startsWith('/inscription') || !this.knownLead || !this.knownLead.name) {
+                    return url;
+                }
+
+                const [base, query] = url.split('?');
+                const params = new URLSearchParams(query || '');
+                const parts = this.knownLead.name.trim().split(/\s+/);
+                const firstName = parts.shift() || '';
+                const lastName = parts.join(' ');
+
+                if (firstName) params.set('first_name', firstName);
+                if (lastName) params.set('last_name', lastName);
+
+                if (this.knownLead.contact) {
+                    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.knownLead.contact)) {
+                        params.set('email', this.knownLead.contact);
+                    } else {
+                        params.set('phone', this.knownLead.contact);
+                    }
+                }
+
+                return base + '?' + params.toString();
+            },
+
             render(content) {
                 const escaper = document.createElement('div');
                 escaper.textContent = content;
@@ -282,7 +365,7 @@
                     (match, label, url) => {
                         const external = url.startsWith('https://');
                         const attrs = external ? ' target="_blank" rel="noopener"' : '';
-                        return `<a href="${url}" class="underline font-semibold text-epa-red hover:opacity-80"${attrs}>${label}</a>`;
+                        return `<a href="${this.withKnownInfo(url)}" class="underline font-semibold text-epa-red hover:opacity-80"${attrs}>${label}</a>`;
                     }
                 );
 
@@ -390,6 +473,9 @@
                                 }
                                 this.messages[assistantIndex].quickReplies = payload.quick_replies || [];
                                 this.messages[assistantIndex].card = payload.card || null;
+                                if (payload.lead) {
+                                    this.knownLead = payload.lead;
+                                }
                             } else if (eventType === 'error') {
                                 ensureAssistantMessage();
                                 this.messages[assistantIndex].content = payload.message || "Désolé, une erreur est survenue.";

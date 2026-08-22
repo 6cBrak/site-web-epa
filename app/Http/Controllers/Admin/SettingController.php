@@ -85,6 +85,7 @@ class SettingController extends Controller
             'values' => $values,
             'heroSlideDelay' => Setting::get('hero_slide_delay_seconds', '4.5'),
             'logoUrl' => Setting::logoUrl(),
+            'chatAssistantName' => Setting::get('chat_assistant_name', 'Aïcha'),
         ]);
     }
 
@@ -93,6 +94,7 @@ class SettingController extends Controller
         $rules = [
             'hero_slide_delay_seconds' => ['required', 'numeric', 'min:1', 'max:30'],
             'logo' => ['nullable', 'image', 'max:4096'],
+            'chat_assistant_name' => ['required', 'string', 'max:50'],
         ];
 
         foreach (self::TEXT_GROUPS as $fields) {
