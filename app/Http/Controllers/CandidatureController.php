@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\CandidatureConfirmee;
 use App\Mail\NouvelleCandidature;
 use App\Models\Antenne;
+use App\Models\AssistantLeadCapture;
 use App\Models\Candidature;
 use App\Models\Formation;
 use App\Models\FormationSession;
@@ -78,7 +79,20 @@ class CandidatureController extends Controller
 
         $data['status'] = 'nouvelle';
 
+        $matchingLead = AssistantLeadCapture::where('contact', $data['email'])
+            ->orWhere('contact', $data['phone'])
+            ->latest('captured_at')
+            ->first();
+
+        if ($matchingLead) {
+            $data['assistant_lead_capture_id'] = $matchingLead->id;
+        }
+
         $candidature = Candidature::create($data);
+
+        if ($matchingLead) {
+            $matchingLead->update(['status' => 'converti']);
+        }
 
         $recipient = Antenne::find($data['antenne_id'])?->email;
 

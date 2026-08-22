@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AssistantLeadCapture extends Model
 {
@@ -12,7 +13,7 @@ class AssistantLeadCapture extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'conversation_id', 'name', 'contact', 'formation_interest', 'notes', 'captured_at', 'status',
+        'conversation_id', 'name', 'contact', 'formation_interest', 'notes', 'priority', 'captured_at', 'status',
     ];
 
     protected $casts = [
@@ -22,5 +23,10 @@ class AssistantLeadCapture extends Model
     public function conversation(): BelongsTo
     {
         return $this->belongsTo(AssistantConversation::class, 'conversation_id');
+    }
+
+    public function candidature(): HasOne
+    {
+        return $this->hasOne(Candidature::class);
     }
 }

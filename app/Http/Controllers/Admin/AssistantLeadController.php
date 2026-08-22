@@ -18,6 +18,10 @@ class AssistantLeadController extends Controller
             $query->where('status', $request->input('status'));
         }
 
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->input('priority'));
+        }
+
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
@@ -28,13 +32,17 @@ class AssistantLeadController extends Controller
         }
 
         return view('admin.assistant-leads.index', [
-            'leads' => $query->latest('captured_at')->paginate(20)->withQueryString(),
+            'leads' => $query
+                ->orderByRaw("FIELD(priority, 'chaud', 'tiede', 'froid')")
+                ->latest('captured_at')
+                ->paginate(20)
+                ->withQueryString(),
         ]);
     }
 
     public function show(AssistantLeadCapture $assistantLead): View
     {
-        $assistantLead->load('conversation.messages');
+        $assistantLead->load('conversation.messages', 'candidature');
 
         return view('admin.assistant-leads.show', ['lead' => $assistantLead]);
     }
@@ -43,6 +51,7 @@ class AssistantLeadController extends Controller
     {
         $data = $request->validate([
             'status' => ['required', 'in:nouveau,contacte,converti,perdu'],
+            'priority' => ['required', 'in:chaud,tiede,froid'],
         ]);
 
         $assistantLead->update($data);

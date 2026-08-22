@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\AssistantLeadRecap;
+use App\Mail\NouveauProspectChat;
 use App\Models\AssistantConversation;
 use App\Models\AssistantLeadCapture;
 use App\Models\AssistantMessage;
@@ -304,12 +305,17 @@ class AssistantController extends Controller
             return null;
         }
 
+        $priority = in_array($input['priority'] ?? null, ['chaud', 'tiede', 'froid'], true)
+            ? $input['priority']
+            : 'tiede';
+
         $lead = AssistantLeadCapture::create([
             'conversation_id' => $conversationId,
             'name' => $input['name'],
             'contact' => $input['contact'],
             'formation_interest' => $input['formation_interest'] ?? null,
             'notes' => $input['notes'] ?? null,
+            'priority' => $priority,
             'captured_at' => now(),
         ]);
 
@@ -318,6 +324,16 @@ class AssistantController extends Controller
                 Mail::to($lead->contact)->send(new AssistantLeadRecap($lead));
             } catch (\Throwable $e) {
                 Log::error('Échec envoi email récap prospect assistant', ['lead_id' => $lead->id, 'error' => $e->getMessage()]);
+            }
+        }
+
+        $staffEmail = Antenne::where('active', true)->orderBy('name')->value('email');
+
+        if ($staffEmail) {
+            try {
+                Mail::to($staffEmail)->send(new NouveauProspectChat($lead));
+            } catch (\Throwable $e) {
+                Log::error('Échec envoi notification équipe (nouveau prospect chat)', ['lead_id' => $lead->id, 'error' => $e->getMessage()]);
             }
         }
 
@@ -336,8 +352,16 @@ class AssistantController extends Controller
                     'contact' => ['type' => 'string', 'description' => 'Téléphone ou email du visiteur, tel que fourni.'],
                     'formation_interest' => ['type' => 'string', 'description' => "Nom de la formation qui intéresse le visiteur, si connue."],
                     'notes' => ['type' => 'string', 'description' => "Résumé bref (une phrase) des infos de qualification utiles pour l'équipe commerciale : antenne préférée, profil étudiant/professionnel, échéance souhaitée, etc."],
+                    'priority' => [
+                        'type' => 'string',
+                        'enum' => ['chaud', 'tiede', 'froid'],
+                        'description' => "Niveau de priorité du prospect pour l'équipe commerciale, basé sur ce que tu observes dans la conversation : "
+                            ."'chaud' = échéance proche exprimée, a demandé explicitement à être rappelé/inscrit, ou intérêt très affirmé pour une formation précise ; "
+                            ."'tiede' = intérêt réel et qualification engagée, mais sans urgence ni engagement ferme exprimés ; "
+                            ."'froid' = contact donné rapidement, échange court, peu d'éléments de qualification obtenus. Choisis toujours une valeur, ne jamais omettre ce champ.",
+                    ],
                 ],
-                'required' => ['name', 'contact'],
+                'required' => ['name', 'contact', 'priority'],
             ],
         ];
     }
@@ -420,6 +444,8 @@ LIMITES STRICTES :
 LIENS D'INSCRIPTION : dès qu'une formation précise intéresse le visiteur, propose-lui directement de s'inscrire en insérant un lien cliquable au format markdown : [S'inscrire à <nom de la formation>](/inscription?formation=<slug>) — utilise le slug exact indiqué dans le contexte pour cette formation. Pour une inscription générale (sans formation précise), utilise [S'inscrire en ligne](/inscription). N'utilise ce format de lien que pour ces deux cas précis, jamais pour autre chose.
 
 CAPTURE DE PROSPECT : dès que le DERNIER message du visiteur contient à la fois un nom ET un moyen de contact (téléphone ou email) — qu'il te l'ait donné spontanément ou en réponse à ta demande — appelle l'outil {$leadTool} avec ces informations, en plus de ta réponse textuelle habituelle (les deux ne s'excluent pas : tu peux répondre normalement, y compris remercier le visiteur ou poser une question de qualification, ET appeler l'outil dans le même tour). N'appelle jamais cet outil si l'un des deux (nom ou contact) manque, et ne mentionne jamais son existence au visiteur.
+
+Cette règle est INCONDITIONNELLE : elle s'applique même si le visiteur dit explicitement qu'il n'est pas pressé, qu'il compare plusieurs centres, ou qu'il pose "juste une question" — capture quand même ses coordonnées si nom+contact sont là, et utilise simplement priority=froid pour refléter le manque d'urgence. Ne JAMAIS confondre "pas de sentiment d'urgence" avec "ne pas capturer" : ce sont deux choses différentes. Un prospect froid capturé aujourd'hui peut être relancé dans plusieurs semaines — un prospect jamais capturé est perdu définitivement.
 
 CONTEXTE (formations et antennes actuellement disponibles) :
 {$this->knowledge->buildContext()}

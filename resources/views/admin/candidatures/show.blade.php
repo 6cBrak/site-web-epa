@@ -3,7 +3,15 @@
 
     <div class="mt-4 grid md:grid-cols-3 gap-6">
         <div class="md:col-span-2 bg-white rounded-lg shadow p-6 space-y-4">
-            <h2 class="font-semibold text-lg">{{ $candidature->first_name }} {{ $candidature->last_name }}</h2>
+            <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-lg">{{ $candidature->first_name }} {{ $candidature->last_name }}</h2>
+                @if ($candidature->assistantLeadCapture)
+                    <a href="{{ route('admin.assistant-leads.show', $candidature->assistantLeadCapture) }}"
+                       class="inline-flex px-2 py-0.5 rounded-full text-xs bg-epa-red/10 text-epa-red hover:bg-epa-red/20">
+                        💬 Provient du chat
+                    </a>
+                @endif
+            </div>
 
             <div class="grid grid-cols-2 gap-4 text-sm">
                 <div><span class="text-gray-500">Email</span><br>{{ $candidature->email }}</div>

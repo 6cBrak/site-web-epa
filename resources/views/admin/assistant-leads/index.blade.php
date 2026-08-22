@@ -5,6 +5,15 @@
             <x-text-input id="search" name="search" type="text" class="mt-1" value="{{ request('search') }}" placeholder="Nom, contact, formation..." />
         </div>
         <div>
+            <x-input-label for="priority" value="Priorité" />
+            <select id="priority" name="priority" class="mt-1 border-gray-300 rounded-md shadow-sm focus:border-epa-red focus:ring-epa-red">
+                <option value="">Toutes</option>
+                @foreach (['chaud' => '🔥 Chaud', 'tiede' => '🌤️ Tiède', 'froid' => '❄️ Froid'] as $value => $label)
+                    <option value="{{ $value }}" @selected(request('priority') === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div>
             <x-input-label for="status" value="Statut" />
             <select id="status" name="status" class="mt-1 border-gray-300 rounded-md shadow-sm focus:border-epa-red focus:ring-epa-red">
                 <option value="">Tous</option>
@@ -20,6 +29,7 @@
         <table class="min-w-full divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase">
                 <tr>
+                    <th class="px-4 py-3">Priorité</th>
                     <th class="px-4 py-3">Date</th>
                     <th class="px-4 py-3">Prospect</th>
                     <th class="px-4 py-3">Formation</th>
@@ -36,9 +46,15 @@
                         'converti' => 'bg-green-100 text-green-800',
                         'perdu' => 'bg-red-100 text-red-800',
                     ];
+                    $priorityLabels = [
+                        'chaud' => '🔥 Chaud',
+                        'tiede' => '🌤️ Tiède',
+                        'froid' => '❄️ Froid',
+                    ];
                 @endphp
                 @forelse ($leads as $lead)
                     <tr>
+                        <td class="px-4 py-3 whitespace-nowrap">{{ $priorityLabels[$lead->priority] ?? $lead->priority }}</td>
                         <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $lead->captured_at->format('d/m/Y H:i') }}</td>
                         <td class="px-4 py-3">
                             <div class="font-medium text-gray-900">{{ $lead->name }}</div>
@@ -57,7 +73,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-6 text-center text-gray-500">Aucun prospect capturé par le chat pour l'instant.</td>
+                        <td colspan="7" class="px-4 py-6 text-center text-gray-500">Aucun prospect capturé par le chat pour l'instant.</td>
                     </tr>
                 @endforelse
             </tbody>

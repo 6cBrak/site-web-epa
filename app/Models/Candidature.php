@@ -12,7 +12,7 @@ class Candidature extends Model
     use HasFactory;
 
     protected $fillable = [
-        'formation_id', 'formation_session_id', 'antenne_id', 'promo_code_id',
+        'formation_id', 'formation_session_id', 'antenne_id', 'promo_code_id', 'assistant_lead_capture_id',
         'first_name', 'last_name', 'email', 'phone',
         'education_level', 'nationality', 'city_country',
         'profile_type', 'cv_path', 'start_preference', 'how_heard', 'comment',
@@ -44,5 +44,10 @@ class Candidature extends Model
     public function promoCode(): BelongsTo
     {
         return $this->belongsTo(PromoCode::class);
+    }
+
+    public function assistantLeadCapture(): BelongsTo
+    {
+        return $this->belongsTo(AssistantLeadCapture::class);
     }
 }

@@ -4,7 +4,19 @@
     <div class="mt-4 grid md:grid-cols-3 gap-6">
         <div class="md:col-span-2 space-y-6">
             <div class="bg-white rounded-lg shadow p-6 space-y-4">
-                <h2 class="font-semibold text-lg">{{ $lead->name }}</h2>
+                <div class="flex items-center gap-2">
+                    <h2 class="font-semibold text-lg">{{ $lead->name }}</h2>
+                    @php
+                        $priorityLabels = ['chaud' => '🔥 Chaud', 'tiede' => '🌤️ Tiède', 'froid' => '❄️ Froid'];
+                    @endphp
+                    <span class="text-sm">{{ $priorityLabels[$lead->priority] ?? $lead->priority }}</span>
+                    @if ($lead->candidature)
+                        <a href="{{ route('admin.candidatures.show', $lead->candidature) }}"
+                           class="inline-flex px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-800 hover:bg-green-200">
+                            ✅ Inscrit(e) — voir la candidature
+                        </a>
+                    @endif
+                </div>
 
                 <div class="grid grid-cols-2 gap-4 text-sm">
                     <div><span class="text-gray-500">Contact</span><br>{{ $lead->contact }}</div>
@@ -41,15 +53,26 @@
         </div>
 
         <div class="bg-white rounded-lg shadow p-6 space-y-4 h-fit">
-            <h3 class="font-semibold">Statut</h3>
+            <h3 class="font-semibold">Statut & priorité</h3>
             <form method="POST" action="{{ route('admin.assistant-leads.update', $lead) }}" class="space-y-3">
                 @csrf
                 @method('PUT')
-                <select name="status" class="w-full border-gray-300 rounded-md shadow-sm focus:border-epa-red focus:ring-epa-red">
-                    @foreach (['nouveau' => 'Nouveau', 'contacte' => 'Contacté', 'converti' => 'Converti', 'perdu' => 'Perdu'] as $value => $label)
-                        <option value="{{ $value }}" @selected($lead->status === $value)>{{ $label }}</option>
-                    @endforeach
-                </select>
+                <div>
+                    <x-input-label for="priority" value="Priorité" />
+                    <select id="priority" name="priority" class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:border-epa-red focus:ring-epa-red">
+                        @foreach (['chaud' => '🔥 Chaud', 'tiede' => '🌤️ Tiède', 'froid' => '❄️ Froid'] as $value => $label)
+                            <option value="{{ $value }}" @selected($lead->priority === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <x-input-label for="status" value="Statut" />
+                    <select id="status" name="status" class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:border-epa-red focus:ring-epa-red">
+                        @foreach (['nouveau' => 'Nouveau', 'contacte' => 'Contacté', 'converti' => 'Converti', 'perdu' => 'Perdu'] as $value => $label)
+                            <option value="{{ $value }}" @selected($lead->status === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <button type="submit" class="w-full px-4 py-2 bg-epa-red text-white text-sm font-medium rounded-md hover:opacity-90">
                     Mettre à jour
                 </button>

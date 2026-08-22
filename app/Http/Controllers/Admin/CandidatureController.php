@@ -47,7 +47,7 @@ class CandidatureController extends Controller
 
     public function show(Candidature $candidature): View
     {
-        $candidature->load(['formation', 'antenne', 'formationSession', 'promoCode.partenaire']);
+        $candidature->load(['formation', 'antenne', 'formationSession', 'promoCode.partenaire', 'assistantLeadCapture']);
 
         return view('admin.candidatures.show', ['candidature' => $candidature]);
     }
