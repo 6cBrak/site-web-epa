@@ -7,6 +7,7 @@ use App\Models\AssistantConversation;
 use App\Models\AssistantLeadCapture;
 use App\Models\AssistantMessage;
 use App\Models\Antenne;
+use App\Models\Formation;
 use App\Models\Setting;
 use App\Services\AssistantKnowledgeService;
 use Illuminate\Http\JsonResponse;
@@ -280,10 +281,18 @@ class AssistantController extends Controller
             return null;
         }
 
+        $image = null;
+
+        if (! empty($input['formation_slug'])) {
+            $formation = Formation::where('slug', $input['formation_slug'])->first(['image']);
+            $image = $formation?->image ? asset('storage/'.$formation->image) : null;
+        }
+
         return [
             'title' => $input['formation_title'],
             'slug' => $input['formation_slug'] ?? null,
             'antenne' => $input['antenne'] ?? null,
+            'image' => $image,
             'reason' => $input['reason'],
             'next_session' => $input['next_session'] ?? null,
         ];

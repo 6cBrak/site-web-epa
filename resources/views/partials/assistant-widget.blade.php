@@ -1,6 +1,13 @@
 @php
     $chatAssistantName = \App\Models\Setting::get('chat_assistant_name', 'Aïcha');
 @endphp
+<style>
+    .epa-chat-scroll { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
+    .epa-chat-scroll::-webkit-scrollbar { width: 6px; }
+    .epa-chat-scroll::-webkit-scrollbar-track { background: transparent; }
+    .epa-chat-scroll::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 9999px; }
+    .epa-chat-scroll::-webkit-scrollbar-thumb:hover { background-color: #9ca3af; }
+</style>
 <div
     x-data="assistantWidget()"
     x-init="init()"
@@ -51,24 +58,36 @@
         x-cloak
         x-transition.opacity.duration.150ms
         @click.outside="open = false"
-        class="absolute bottom-[4.5rem] right-0 w-[350px] max-w-[88vw] h-[500px] max-h-[70vh] bg-white rounded-xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
+        class="fixed inset-0 sm:absolute sm:inset-auto sm:bottom-[4.5rem] sm:right-0 w-full h-full sm:w-[350px] sm:max-w-[88vw] sm:h-[500px] sm:max-h-[70vh] bg-white rounded-none sm:rounded-xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border-0 sm:border sm:border-gray-100 flex flex-col overflow-hidden"
     >
         {{-- Header --}}
         <div class="bg-epa-red text-white px-4 py-3 flex items-center justify-between gap-2 shrink-0">
             <span class="font-semibold text-sm">{{ $chatAssistantName }} · EPA_BURKINA</span>
-            @if ($whatsappNumber)
-                <a :href="whatsappHref()" target="_blank" rel="noopener"
-                   class="flex items-center justify-center w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 transition"
-                   aria-label="Discuter directement sur WhatsApp" title="Discuter sur WhatsApp">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-                        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.36a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2Zm5.79 14.06c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.02.24-3.4-.71-2.88-1.15-4.72-4.06-4.86-4.25-.14-.19-1.16-1.54-1.16-2.94s.73-2.09.99-2.38c.26-.28.56-.35.75-.35h.53c.17 0 .4-.06.62.48.24.58.81 1.99.88 2.13.07.14.12.31.02.5-.1.19-.15.31-.29.48-.14.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.76 1.25 1.62 2.03 1.12 1 2.07 1.31 2.36 1.46.29.15.46.13.63-.08.17-.21.72-.84.91-1.13.19-.29.38-.24.63-.14.26.1 1.65.78 1.93.92.29.14.48.21.55.33.07.12.07.7-.17 1.38Z"/>
+            <div class="flex items-center gap-1.5">
+                @if ($whatsappNumber)
+                    <a :href="whatsappHref()" target="_blank" rel="noopener"
+                       class="flex items-center justify-center w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 transition"
+                       aria-label="Discuter directement sur WhatsApp" title="Discuter sur WhatsApp">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.36a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2Zm5.79 14.06c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.02.24-3.4-.71-2.88-1.15-4.72-4.06-4.86-4.25-.14-.19-1.16-1.54-1.16-2.94s.73-2.09.99-2.38c.26-.28.56-.35.75-.35h.53c.17 0 .4-.06.62.48.24.58.81 1.99.88 2.13.07.14.12.31.02.5-.1.19-.15.31-.29.48-.14.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.76 1.25 1.62 2.03 1.12 1 2.07 1.31 2.36 1.46.29.15.46.13.63-.08.17-.21.72-.84.91-1.13.19-.29.38-.24.63-.14.26.1 1.65.78 1.93.92.29.14.48.21.55.33.07.12.07.7-.17 1.38Z"/>
+                        </svg>
+                    </a>
+                @endif
+                <button
+                    type="button"
+                    @click="toggleOpen()"
+                    class="flex items-center justify-center w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 transition"
+                    aria-label="Fermer le chat"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
-                </a>
-            @endif
+                </button>
+            </div>
         </div>
 
         {{-- Messages --}}
-        <div x-ref="scroller" class="flex-1 overflow-y-auto px-3 py-3 space-y-2 bg-gray-50">
+        <div x-ref="scroller" class="epa-chat-scroll flex-1 overflow-y-auto px-3 py-3 space-y-2 bg-gray-50">
             <template x-for="(msg, index) in messages" :key="index">
                 <div>
                     <div
@@ -91,25 +110,33 @@
 
                     {{-- Fiche recommandation --}}
                     <template x-if="msg.role === 'assistant' && msg.card">
-                        <div class="ml-8 mt-2 bg-white border border-epa-red/30 rounded-xl p-3 shadow-sm max-w-[80%]">
-                            <div class="flex items-center gap-1 text-[10px] font-bold text-epa-red uppercase tracking-wide mb-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3">
-                                    <path d="M11.48 3.5a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.563.563 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.563.563 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                                </svg>
-                                <span>Recommandé pour vous</span>
-                            </div>
-                            <div class="font-semibold text-sm text-epa-black" x-text="msg.card.title"></div>
-                            <div class="text-xs text-gray-600 mt-1" x-text="msg.card.reason"></div>
-                            <div class="text-xs text-gray-500 mt-1.5 space-y-0.5">
-                                <div x-show="msg.card.antenne">📍 <span x-text="msg.card.antenne"></span></div>
-                                <div x-show="msg.card.next_session">🗓️ <span x-text="msg.card.next_session"></span></div>
-                            </div>
-                            <a
-                                :href="withKnownInfo(msg.card.slug ? ('/inscription?formation=' + msg.card.slug) : '/inscription')"
-                                class="mt-2.5 inline-flex items-center justify-center w-full px-3 py-2 rounded-md bg-epa-red text-white text-xs font-semibold hover:opacity-90 transition"
+                        <div class="ml-8 mt-2 bg-white border border-epa-red/30 rounded-xl shadow-sm max-w-[80%] overflow-hidden">
+                            <img
+                                x-show="msg.card.image"
+                                :src="msg.card.image"
+                                alt=""
+                                class="w-full h-28 object-cover"
                             >
-                                S'inscrire à cette formation
-                            </a>
+                            <div class="p-3">
+                                <div class="flex items-center gap-1 text-[10px] font-bold text-epa-red uppercase tracking-wide mb-1.5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3">
+                                        <path d="M11.48 3.5a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.563.563 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.563.563 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                                    </svg>
+                                    <span>Recommandé pour vous</span>
+                                </div>
+                                <div class="font-semibold text-sm text-epa-black" x-text="msg.card.title"></div>
+                                <div class="text-xs text-gray-600 mt-1" x-text="msg.card.reason"></div>
+                                <div class="text-xs text-gray-500 mt-1.5 space-y-0.5">
+                                    <div x-show="msg.card.antenne">📍 <span x-text="msg.card.antenne"></span></div>
+                                    <div x-show="msg.card.next_session">🗓️ <span x-text="msg.card.next_session"></span></div>
+                                </div>
+                                <a
+                                    :href="withKnownInfo(msg.card.slug ? ('/inscription?formation=' + msg.card.slug) : '/inscription')"
+                                    class="mt-2.5 inline-flex items-center justify-center w-full px-3 py-2 rounded-md bg-epa-red text-white text-xs font-semibold hover:opacity-90 transition"
+                                >
+                                    S'inscrire à cette formation
+                                </a>
+                            </div>
                         </div>
                     </template>
 
