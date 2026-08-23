@@ -91,7 +91,17 @@
             @foreach ($programmes as $programme)
                 <a href="{{ route('formations.index', ['programme' => $programme->slug]) }}"
                    class="group block p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition">
-                    <div class="w-10 h-10 rounded-full mb-4" style="background-color: {{ $programme->color ?? '#EE0916' }}"></div>
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-4 text-white overflow-hidden"
+                         style="background-color: {{ $programme->color ?? '#EE0916' }}">
+                        @if ($programme->icon)
+                            <img src="{{ asset('storage/'.$programme->icon) }}" alt="" class="w-8 h-8 object-contain">
+                        @else
+                            {{-- Icône générique par défaut, tant qu'aucune icône n'est configurée pour ce programme dans l'admin --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-7 h-7">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.44 60.44 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443" />
+                            </svg>
+                        @endif
+                    </div>
                     <h3 class="text-xl font-semibold mb-2 group-hover:text-epa-red transition">{{ $programme->name }}</h3>
                     <p class="text-gray-500 text-sm mb-4">{{ $programme->formations_count }} formations disponibles</p>
                     <span class="text-epa-red text-sm font-medium">Découvrir →</span>
@@ -102,11 +112,21 @@
 
     {{-- Avantages --}}
     <section class="bg-gray-50 py-20">
+        @php
+            $advantageIcons = [
+                1 => 'M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.4 14.4 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18',
+                2 => 'M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z',
+                3 => 'M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 1.943.727 3.727 1.936 5.136-.276.98-.83 2.036-1.685 2.912a.75.75 0 0 0 .582 1.235c1.75 0 3.28-.65 4.402-1.398A9.9 9.9 0 0 0 12 20.25Z',
+                4 => 'M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z',
+            ];
+        @endphp
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             @foreach ([1, 2, 3, 4] as $n)
                 <div>
                     <div class="w-12 h-12 mx-auto rounded-full bg-epa-red/10 flex items-center justify-center mb-3">
-                        <span class="w-3 h-3 rounded-full bg-epa-red"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-6 h-6 text-epa-red">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $advantageIcons[$n] }}" />
+                        </svg>
                     </div>
                     <p class="text-sm font-medium text-gray-700">{{ Setting::text('home_advantage_'.$n) }}</p>
                 </div>

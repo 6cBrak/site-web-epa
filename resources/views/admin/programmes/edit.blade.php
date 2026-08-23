@@ -1,5 +1,5 @@
 <x-admin-layout title="Modifier le programme">
-    <form method="POST" action="{{ route('admin.programmes.update', $programme) }}" class="bg-white rounded-lg shadow p-6 space-y-6">
+    <form method="POST" action="{{ route('admin.programmes.update', $programme) }}" enctype="multipart/form-data" class="bg-white rounded-lg shadow p-6 space-y-6">
         @csrf
         @method('PUT')
         @include('admin.programmes._form')

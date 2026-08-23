@@ -18,6 +18,7 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/.claude/skills/screenshot-site/screenshots
 /vendor
 Homestead.json
 Homestead.yaml

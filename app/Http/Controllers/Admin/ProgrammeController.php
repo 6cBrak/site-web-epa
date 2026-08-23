@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Programme;
+use App\Services\ImageOptimizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -28,6 +30,10 @@ class ProgrammeController extends Controller
         $data = $this->validated($request);
         $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['name_fr']);
 
+        if ($request->hasFile('icon')) {
+            $data['icon'] = app(ImageOptimizer::class)->store($request->file('icon'), 'programmes', maxWidth: 200);
+        }
+
         Programme::create($data);
 
         return redirect()->route('admin.programmes.index')->with('status', 'Programme créé.');
@@ -43,6 +49,13 @@ class ProgrammeController extends Controller
         $data = $this->validated($request, $programme->id);
         $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['name_fr']);
 
+        if ($request->hasFile('icon')) {
+            if ($programme->icon) {
+                Storage::disk('public')->delete($programme->icon);
+            }
+            $data['icon'] = app(ImageOptimizer::class)->store($request->file('icon'), 'programmes', maxWidth: 200);
+        }
+
         $programme->update($data);
 
         return redirect()->route('admin.programmes.index')->with('status', 'Programme mis à jour.');
@@ -50,6 +63,10 @@ class ProgrammeController extends Controller
 
     public function destroy(Programme $programme): RedirectResponse
     {
+        if ($programme->icon) {
+            Storage::disk('public')->delete($programme->icon);
+        }
+
         $programme->delete();
 
         return redirect()->route('admin.programmes.index')->with('status', 'Programme supprimé.');
@@ -63,6 +80,7 @@ class ProgrammeController extends Controller
             'slug' => ['nullable', 'string', 'max:255', 'alpha_dash', 'unique:programmes,slug'.($ignoreId ? ",{$ignoreId}" : '')],
             'description_fr' => ['nullable', 'string'],
             'description_en' => ['nullable', 'string'],
+            'icon' => ['nullable', 'image', 'max:2048'],
             'color' => ['nullable', 'string', 'max:20'],
             'order' => ['nullable', 'integer', 'min:0'],
             'active' => ['sometimes', 'boolean'],

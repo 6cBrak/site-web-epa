@@ -26,6 +26,17 @@
     </div>
 
     <div>
+        <x-input-label for="icon" value="Icône (affichée sur la page d'accueil)" />
+        @if ($programme?->icon)
+            <img src="{{ asset('storage/'.$programme->icon) }}" alt="" class="h-10 w-10 object-contain mt-1 mb-2 rounded"
+                 style="background-color: {{ $programme->color ?? '#EE0916' }}">
+        @endif
+        <input id="icon" name="icon" type="file" accept="image/*" class="mt-1 block w-full text-sm">
+        <p class="mt-1 text-xs text-gray-500">Idéalement une icône simple en blanc sur fond transparent (PNG/SVG). Si aucune icône n'est fournie, une icône générique s'affiche.</p>
+        <x-input-error :messages="$errors->get('icon')" class="mt-1" />
+    </div>
+
+    <div>
         <x-input-label for="description_fr" value="Description (FR)" />
         <textarea id="description_fr" name="description_fr" rows="4"
                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-epa-red focus:ring-epa-red">{{ old('description_fr', $programme?->description_fr) }}</textarea>

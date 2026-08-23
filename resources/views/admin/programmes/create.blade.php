@@ -1,5 +1,5 @@
 <x-admin-layout title="Nouveau programme">
-    <form method="POST" action="{{ route('admin.programmes.store') }}" class="bg-white rounded-lg shadow p-6 space-y-6">
+    <form method="POST" action="{{ route('admin.programmes.store') }}" enctype="multipart/form-data" class="bg-white rounded-lg shadow p-6 space-y-6">
         @csrf
         @include('admin.programmes._form')
 
