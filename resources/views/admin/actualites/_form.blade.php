@@ -1,5 +1,27 @@
 @php $actualite ??= null; @endphp
 
+<div
+    x-data="actualiteAiWriter()"
+    class="bg-red-50/50 border border-epa-red/20 rounded-lg p-4 mb-6"
+>
+    <label for="ai_subject" class="block text-sm font-medium text-epa-black mb-1">
+        ✨ Générer un brouillon avec l'IA
+    </label>
+    <p class="text-xs text-gray-500 mb-2">Décris le sujet en quelques mots (ex: "Remise de diplômes de la promotion 2026 à Ouagadougou"), l'IA rédige un brouillon FR/EN à relire ci-dessous.</p>
+    <div class="flex gap-2">
+        <input id="ai_subject" type="text" x-model="subject" :disabled="loading"
+               class="flex-1 border-gray-300 rounded-md shadow-sm text-sm focus:border-epa-red focus:ring-epa-red"
+               placeholder="Sujet de l'article...">
+        <button type="button" @click="generate()" :disabled="loading || !subject.trim()"
+                class="px-4 py-2 bg-epa-red text-white text-sm font-medium rounded-md hover:opacity-90 disabled:opacity-40 shrink-0">
+            <span x-show="!loading">Générer</span>
+            <span x-show="loading">Génération…</span>
+        </button>
+    </div>
+    <p x-show="error" x-text="error" x-cloak class="text-xs text-red-600 mt-2"></p>
+    <p x-show="filled" x-cloak class="text-xs text-green-700 mt-2">✓ Brouillon inséré ci-dessous — relis et ajuste avant d'enregistrer.</p>
+</div>
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <div>
         <x-input-label for="title_fr" value="Titre (FR)" />
@@ -55,3 +77,52 @@
         <x-input-label for="published" value="Publier sur le site public" />
     </div>
 </div>
+
+<script>
+    function actualiteAiWriter() {
+        return {
+            subject: '',
+            loading: false,
+            error: '',
+            filled: false,
+
+            async generate() {
+                if (!this.subject.trim() || this.loading) return;
+
+                this.loading = true;
+                this.error = '';
+                this.filled = false;
+
+                try {
+                    const response = await fetch('{{ route('admin.actualites.ai-generate') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        },
+                        body: JSON.stringify({ subject: this.subject }),
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        this.error = data.message || "Échec de la génération.";
+                        return;
+                    }
+
+                    ['title_fr', 'title_en', 'excerpt_fr', 'excerpt_en', 'content_fr', 'content_en'].forEach((field) => {
+                        const el = document.getElementById(field);
+                        if (el && data[field]) el.value = data[field];
+                    });
+
+                    this.filled = true;
+                } catch (e) {
+                    this.error = "Erreur réseau, réessayez.";
+                } finally {
+                    this.loading = false;
+                }
+            },
+        };
+    }
+</script>

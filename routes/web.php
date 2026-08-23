@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ActualiteAiController;
 use App\Http\Controllers\Admin\ActualiteController;
 use App\Http\Controllers\Admin\AntenneController;
 use App\Http\Controllers\Admin\AssistantConversationController;
@@ -58,6 +59,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('assistant-leads', AssistantLeadController::class)->only(['index', 'show', 'update', 'destroy']);
     Route::resource('assistant-conversations', AssistantConversationController::class)->only(['index', 'show', 'destroy']);
 
+    Route::post('actualites/ai-generate', [ActualiteAiController::class, 'generate'])->name('actualites.ai-generate');
     Route::resource('actualites', ActualiteController::class)->except('show');
     Route::resource('team-members', TeamMemberController::class)->except('show');
     Route::resource('partenaires', PartenaireController::class)->except('show');
