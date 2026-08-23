@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Antenne;
 use App\Models\Formation;
 use App\Models\Programme;
+use App\Services\ImageOptimizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -35,7 +36,7 @@ class FormationController extends Controller
         $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title_fr']);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('formations', 'public');
+            $data['image'] = app(ImageOptimizer::class)->store($request->file('image'), 'formations', maxWidth: 1600);
         }
 
         $formation = Formation::create($data);
@@ -63,7 +64,7 @@ class FormationController extends Controller
             if ($formation->image) {
                 Storage::disk('public')->delete($formation->image);
             }
-            $data['image'] = $request->file('image')->store('formations', 'public');
+            $data['image'] = app(ImageOptimizer::class)->store($request->file('image'), 'formations', maxWidth: 1600);
         }
 
         $formation->update($data);

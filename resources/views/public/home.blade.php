@@ -32,6 +32,7 @@
                 @forelse ($heroSlides as $i => $item)
                     <img src="{{ asset('storage/'.$item->image) }}" alt="{{ $item->caption }}"
                          class="absolute inset-0 w-full h-full object-cover"
+                         @if ($i === 0) fetchpriority="high" @else loading="lazy" @endif
                          @if ($i !== 0) x-cloak @endif
                          x-show="slide === {{ $i }}"
                          x-transition:enter="transition ease-out duration-700"
@@ -138,7 +139,7 @@
                     @foreach ($actualites as $actualite)
                         <a href="{{ route('actualites.show', $actualite) }}" class="block bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition">
                             @if ($actualite->image)
-                                <img src="{{ asset('storage/'.$actualite->image) }}" alt="" class="w-full h-40 object-cover">
+                                <img src="{{ asset('storage/'.$actualite->image) }}" alt="{{ $actualite->title }}" class="w-full h-40 object-cover" loading="lazy">
                             @endif
                             <div class="p-5">
                                 <h3 class="font-semibold mb-2">{{ $actualite->title }}</h3>
@@ -162,7 +163,7 @@
             <div class="flex flex-wrap items-center justify-center gap-10">
                 @foreach ($partenaires as $partenaire)
                     @if ($partenaire->logo)
-                        <img src="{{ asset('storage/'.$partenaire->logo) }}" alt="{{ $partenaire->name }}" class="h-12 object-contain grayscale hover:grayscale-0 transition">
+                        <img src="{{ asset('storage/'.$partenaire->logo) }}" alt="{{ $partenaire->name }}" class="h-12 object-contain grayscale hover:grayscale-0 transition" loading="lazy">
                     @else
                         <span class="text-sm font-medium text-gray-500">{{ $partenaire->name }}</span>
                     @endif

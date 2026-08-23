@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Actualite;
+use App\Services\ImageOptimizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +31,7 @@ class ActualiteController extends Controller
         $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['title_fr']);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('actualites', 'public');
+            $data['image'] = app(ImageOptimizer::class)->store($request->file('image'), 'actualites', maxWidth: 1600);
         }
 
         Actualite::create($data);
@@ -52,7 +53,7 @@ class ActualiteController extends Controller
             if ($actualite->image) {
                 Storage::disk('public')->delete($actualite->image);
             }
-            $data['image'] = $request->file('image')->store('actualites', 'public');
+            $data['image'] = app(ImageOptimizer::class)->store($request->file('image'), 'actualites', maxWidth: 1600);
         }
 
         $actualite->update($data);

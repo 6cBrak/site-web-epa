@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Partenaire;
+use App\Services\ImageOptimizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +29,7 @@ class PartenaireController extends Controller
         $data = $this->validated($request);
 
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('partenaires', 'public');
+            $data['logo'] = app(ImageOptimizer::class)->store($request->file('logo'), 'partenaires', maxWidth: 600);
         }
 
         Partenaire::create($data);
@@ -49,7 +50,7 @@ class PartenaireController extends Controller
             if ($partenaire->logo) {
                 Storage::disk('public')->delete($partenaire->logo);
             }
-            $data['logo'] = $request->file('logo')->store('partenaires', 'public');
+            $data['logo'] = app(ImageOptimizer::class)->store($request->file('logo'), 'partenaires', maxWidth: 600);
         }
 
         $partenaire->update($data);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\ImageOptimizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -108,7 +109,7 @@ class SettingController extends Controller
 
         if ($request->hasFile('logo')) {
             $oldLogo = Setting::get('site_logo');
-            Setting::set('site_logo', $request->file('logo')->store('branding', 'public'));
+            Setting::set('site_logo', app(ImageOptimizer::class)->store($request->file('logo'), 'branding', maxWidth: 800));
             if ($oldLogo) {
                 Storage::disk('public')->delete($oldLogo);
             }

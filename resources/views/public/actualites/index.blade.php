@@ -7,8 +7,10 @@
             @forelse ($actualites as $actualite)
                 <a href="{{ route('actualites.show', $actualite) }}"
                    class="group block rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition overflow-hidden">
-                    <div class="h-40 bg-gray-100"
-                         @if ($actualite->image) style="background-image:url('{{ asset('storage/'.$actualite->image) }}');background-size:cover;background-position:center;" @endif>
+                    <div class="h-40 bg-gray-100 overflow-hidden">
+                        @if ($actualite->image)
+                            <img src="{{ asset('storage/'.$actualite->image) }}" alt="{{ $actualite->title }}" class="w-full h-full object-cover" loading="lazy">
+                        @endif
                     </div>
                     <div class="p-5">
                         <div class="text-xs text-gray-400 mb-2">{{ $actualite->published_at->translatedFormat('d F Y') }}</div>

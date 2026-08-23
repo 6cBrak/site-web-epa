@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\TeamMember;
+use App\Services\ImageOptimizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +29,7 @@ class TeamMemberController extends Controller
         $data = $this->validated($request);
 
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('team', 'public');
+            $data['photo'] = app(ImageOptimizer::class)->store($request->file('photo'), 'team', maxWidth: 800);
         }
 
         TeamMember::create($data);
@@ -49,7 +50,7 @@ class TeamMemberController extends Controller
             if ($teamMember->photo) {
                 Storage::disk('public')->delete($teamMember->photo);
             }
-            $data['photo'] = $request->file('photo')->store('team', 'public');
+            $data['photo'] = app(ImageOptimizer::class)->store($request->file('photo'), 'team', maxWidth: 800);
         }
 
         $teamMember->update($data);

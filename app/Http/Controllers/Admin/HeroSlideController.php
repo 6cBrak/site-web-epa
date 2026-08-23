@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
+use App\Services\ImageOptimizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -27,7 +28,7 @@ class HeroSlideController extends Controller
     {
         $data = $this->validated($request, true);
 
-        $data['image'] = $request->file('image')->store('hero-slides', 'public');
+        $data['image'] = app(ImageOptimizer::class)->store($request->file('image'), 'hero-slides', maxWidth: 1920);
 
         HeroSlide::create($data);
 
@@ -45,7 +46,7 @@ class HeroSlideController extends Controller
 
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($heroSlide->image);
-            $data['image'] = $request->file('image')->store('hero-slides', 'public');
+            $data['image'] = app(ImageOptimizer::class)->store($request->file('image'), 'hero-slides', maxWidth: 1920);
         }
 
         $heroSlide->update($data);

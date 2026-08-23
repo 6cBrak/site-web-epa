@@ -35,11 +35,12 @@
             @forelse ($formations as $formation)
                 <a href="{{ route('formations.show', $formation) }}"
                    class="group block rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition overflow-hidden">
-                    <div class="h-36 bg-gray-100 flex items-center justify-center"
-                         @if ($formation->image) style="background-image:url('{{ asset('storage/'.$formation->image) }}');background-size:cover;background-position:center;" @endif>
-                        @unless ($formation->image)
+                    <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden">
+                        @if ($formation->image)
+                            <img src="{{ asset('storage/'.$formation->image) }}" alt="{{ $formation->title }}" class="w-full h-full object-cover" loading="lazy">
+                        @else
                             <span class="w-3 h-3 rounded-full" style="background-color: {{ $formation->programme->color ?? '#EE0916' }}"></span>
-                        @endunless
+                        @endif
                     </div>
                     <div class="p-5">
                         <span class="text-xs font-medium text-epa-red uppercase">{{ $formation->programme->name }}</span>
