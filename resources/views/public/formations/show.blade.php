@@ -29,8 +29,9 @@
     <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <a href="{{ route('formations.index') }}" class="text-sm text-gray-500 hover:text-epa-red">&larr; Toutes les formations</a>
 
-        <div class="mt-4 flex items-center gap-3">
+        <div class="mt-4 flex items-center justify-between gap-3 flex-wrap">
             <span class="text-xs font-medium text-epa-red uppercase">{{ $formation->programme->name }}</span>
+            <x-share-buttons :title="$formation->title" />
         </div>
         <h1 class="text-3xl font-bold mt-2 mb-6">{{ $formation->title }}</h1>
 

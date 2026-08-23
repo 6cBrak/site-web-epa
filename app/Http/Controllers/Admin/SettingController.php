@@ -70,6 +70,18 @@ class SettingController extends Controller
         ],
     ];
 
+    /**
+     * Réseaux sociaux : champs simples (non bilingues), key => label.
+     */
+    public const SOCIAL_FIELDS = [
+        'social_facebook' => 'Facebook',
+        'social_instagram' => 'Instagram',
+        'social_linkedin' => 'LinkedIn',
+        'social_tiktok' => 'TikTok',
+        'social_youtube' => 'YouTube',
+        'social_twitter' => 'X (Twitter)',
+    ];
+
     public function edit(): View
     {
         $values = [];
@@ -81,12 +93,18 @@ class SettingController extends Controller
             }
         }
 
+        $socialValues = [];
+        foreach (array_keys(self::SOCIAL_FIELDS) as $key) {
+            $socialValues[$key] = Setting::get($key);
+        }
+
         return view('admin.settings.edit', [
             'groups' => self::TEXT_GROUPS,
             'values' => $values,
             'heroSlideDelay' => Setting::get('hero_slide_delay_seconds', '4.5'),
             'logoUrl' => Setting::logoUrl(),
             'chatAssistantName' => Setting::get('chat_assistant_name', 'Aïcha'),
+            'socialValues' => $socialValues,
         ]);
     }
 
@@ -97,6 +115,10 @@ class SettingController extends Controller
             'logo' => ['nullable', 'image', 'max:4096'],
             'chat_assistant_name' => ['required', 'string', 'max:50'],
         ];
+
+        foreach (array_keys(self::SOCIAL_FIELDS) as $key) {
+            $rules[$key] = ['nullable', 'url', 'max:255'];
+        }
 
         foreach (self::TEXT_GROUPS as $fields) {
             foreach (array_keys($fields) as $key) {

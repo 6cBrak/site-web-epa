@@ -151,6 +151,30 @@
                     <img src="{{ Setting::logoUrl() }}" alt="EPA" class="h-10 w-auto max-w-[8rem] object-contain">
                 </div>
                 <p class="text-sm text-gray-400">{{ Setting::text('footer_tagline') }}</p>
+
+                @php
+                    $socialLinks = [
+                        'facebook' => ['url' => Setting::get('social_facebook'), 'label' => 'Facebook'],
+                        'instagram' => ['url' => Setting::get('social_instagram'), 'label' => 'Instagram'],
+                        'linkedin' => ['url' => Setting::get('social_linkedin'), 'label' => 'LinkedIn'],
+                        'tiktok' => ['url' => Setting::get('social_tiktok'), 'label' => 'TikTok'],
+                        'youtube' => ['url' => Setting::get('social_youtube'), 'label' => 'YouTube'],
+                        'twitter' => ['url' => Setting::get('social_twitter'), 'label' => 'X (Twitter)'],
+                    ];
+                @endphp
+                @if (collect($socialLinks)->pluck('url')->filter()->isNotEmpty())
+                    <div class="flex items-center gap-3 mt-4">
+                        @foreach ($socialLinks as $key => $social)
+                            @if ($social['url'])
+                                <a href="{{ $social['url'] }}" target="_blank" rel="noopener"
+                                   class="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-epa-red transition"
+                                   aria-label="{{ $social['label'] }}" title="{{ $social['label'] }}">
+                                    <x-social-icon :platform="$key" class="w-4 h-4" />
+                                </a>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
             @foreach ($footerAntennes as $antenne)

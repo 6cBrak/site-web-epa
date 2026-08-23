@@ -37,6 +37,22 @@
             </div>
         </div>
 
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="font-semibold text-gray-800 mb-1">Réseaux sociaux</h2>
+            <p class="text-xs text-gray-500 mb-4">Laisse vide un champ pour que son icône n'apparaisse pas sur le site.</p>
+            <div class="grid md:grid-cols-2 gap-4">
+                @foreach (\App\Http\Controllers\Admin\SettingController::SOCIAL_FIELDS as $key => $label)
+                    <div>
+                        <x-input-label for="{{ $key }}" value="{{ $label }}" />
+                        <x-text-input id="{{ $key }}" name="{{ $key }}" type="url"
+                                       class="mt-1 block w-full" value="{{ old($key, $socialValues[$key]) }}"
+                                       placeholder="https://..." />
+                        <x-input-error :messages="$errors->get($key)" class="mt-1" />
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         @foreach ($groups as $groupLabel => $fields)
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="font-semibold text-gray-800 mb-4">{{ $groupLabel }}</h2>
