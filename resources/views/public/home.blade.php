@@ -1,5 +1,5 @@
-@php use App\Models\Setting; @endphp
-<x-public-layout>
+@php use App\Models\Setting; use Illuminate\Support\Str; @endphp
+<x-public-layout :description="Str::limit(Setting::text('hero_subtitle'), 160)">
     {{-- Hero --}}
     <section class="bg-epa-black text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid md:grid-cols-2 gap-10 md:items-stretch">

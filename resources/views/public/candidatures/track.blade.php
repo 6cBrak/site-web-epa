@@ -1,4 +1,4 @@
-<x-public-layout title="Suivi de candidature">
+<x-public-layout title="Suivi de candidature" :noindex="true">
     @php
         $statusLabels = [
             'nouvelle' => ['Reçue', 'bg-blue-100 text-blue-800'],

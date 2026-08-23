@@ -1,5 +1,5 @@
 @php use App\Models\Setting; @endphp
-<x-public-layout :title="Setting::text('contact_title')">
+<x-public-layout :title="Setting::text('contact_title')" description="Contactez EPA_BURKINA : nos antennes à Ouagadougou, Bobo-Dioulasso et Dori/Sahel, téléphone, email et formulaire de contact en ligne.">
     <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 class="text-3xl font-bold mb-12 text-center">{{ Setting::text('contact_title') }}</h1>
 

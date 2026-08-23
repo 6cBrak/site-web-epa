@@ -1,4 +1,4 @@
-<x-public-layout title="S'inscrire">
+<x-public-layout title="S'inscrire" description="Inscrivez-vous en ligne à une formation professionnelle EPA_BURKINA en quelques minutes.">
     <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 class="text-3xl font-bold mb-2 text-center">Formulaire d'inscription</h1>
         <p class="text-gray-500 text-center mb-10">Remplissez ce formulaire, nous revenons vers vous rapidement.</p>

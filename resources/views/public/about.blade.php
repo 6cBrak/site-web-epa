@@ -1,5 +1,5 @@
-@php use App\Models\Setting; @endphp
-<x-public-layout :title="Setting::text('about_title')">
+@php use App\Models\Setting; use Illuminate\Support\Str; @endphp
+<x-public-layout :title="Setting::text('about_title')" :description="Str::limit(strip_tags(Setting::text('about_intro')), 160)">
     <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 class="text-3xl font-bold mb-8 text-center">{{ Setting::text('about_title') }}</h1>
 

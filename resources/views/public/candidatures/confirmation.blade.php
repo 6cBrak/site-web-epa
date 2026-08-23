@@ -1,4 +1,4 @@
-<x-public-layout title="Candidature envoyée">
+<x-public-layout title="Candidature envoyée" :noindex="true">
     <section class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <div class="w-16 h-16 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-6">
             <span class="text-green-600 text-2xl">✓</span>

@@ -1,4 +1,4 @@
-<x-public-layout title="Nos formations">
+<x-public-layout title="Nos formations" description="Découvrez toutes les formations professionnelles EPA_BURKINA en Informatique &amp; Digitalisation et Action Humanitaire &amp; Développement, disponibles à Ouagadougou, Bobo-Dioulasso et Dori.">
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 class="text-3xl font-bold mb-2 text-center">Nos formations</h1>
         <p class="text-gray-500 text-center mb-10">{{ $formations->count() }} formation(s) disponible(s)</p>

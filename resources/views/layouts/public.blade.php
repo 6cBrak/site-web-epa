@@ -4,19 +4,64 @@
     $footerAntennes = \App\Models\Antenne::where('active', true)->orderBy('name')->get();
     $whatsappAntenne = $footerAntennes->first();
     $whatsappNumber = $whatsappAntenne ? preg_replace('/\D/', '', $whatsappAntenne->phone) : null;
+
+    $metaTitle = ($title ? $title.' — ' : '').config('app.name');
+    $metaDescription = $description ?: 'EPA_BURKINA — Centre de formation professionnelle en Informatique & Action Humanitaire au Burkina Faso (Ouagadougou, Bobo-Dioulasso, Dori).';
+    $metaImage = $image ?: Setting::logoUrl();
+
+    $organizationSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'EducationalOrganization',
+        'name' => 'EPA_BURKINA',
+        'url' => url('/'),
+        'logo' => Setting::logoUrl(),
+        'description' => 'Centre de formation professionnelle en Informatique & Action Humanitaire au Burkina Faso.',
+        'location' => $footerAntennes->map(fn ($antenne) => [
+            '@type' => 'Place',
+            'name' => $antenne->name,
+            'address' => $antenne->address,
+        ])->values()->all(),
+        'contactPoint' => $whatsappAntenne ? [
+            '@type' => 'ContactPoint',
+            'telephone' => $whatsappAntenne->phone,
+            'contactType' => 'customer service',
+        ] : null,
+    ];
 @endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ? $title.' — ' : '' }}{{ config('app.name') }}</title>
-    <meta name="description" content="EPA — Centre de formation professionnelle en Informatique & Action Humanitaire au Burkina Faso.">
+    <meta name="google-site-verification" content="yGECSEOlfcpldMxY7h_IJ2MmwIscalmDdPQbT47SkTE" />
+    <title>{{ $metaTitle }}</title>
+    <meta name="description" content="{{ $metaDescription }}">
+    <link rel="canonical" href="{{ url()->current() }}">
+    @if ($noindex)
+        <meta name="robots" content="noindex, nofollow">
+    @endif
+
+    {{-- Open Graph / réseaux sociaux (WhatsApp, Facebook...) --}}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:title" content="{{ $metaTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:image" content="{{ $metaImage }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $metaTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $metaImage }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <script type="application/ld+json">{!! json_encode(array_filter($organizationSchema), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+    @if ($schema)
+        <script type="application/ld+json">{!! $schema !!}</script>
+    @endif
 </head>
 <body class="font-sans antialiased bg-white text-epa-black">
 

@@ -1,4 +1,4 @@
-<x-public-layout title="Actualités">
+<x-public-layout title="Actualités" description="Suivez les actualités et les temps forts d'EPA_BURKINA, centre de formation professionnelle en Informatique et Action Humanitaire au Burkina Faso.">
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 class="text-3xl font-bold mb-2 text-center">Actualités</h1>
         <p class="text-gray-500 text-center mb-12">Annonces, événements et succès de nos apprenants</p>

@@ -1,4 +1,26 @@
-<x-public-layout :title="$actualite->title">
+@php
+    use Illuminate\Support\Str;
+
+    $actualiteDescription = $actualite->excerpt
+        ? Str::limit(strip_tags($actualite->excerpt), 160)
+        : Str::limit(strip_tags($actualite->content), 160);
+
+    $actualiteImage = $actualite->image ? asset('storage/'.$actualite->image) : null;
+
+    $articleSchema = json_encode(array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'Article',
+        'headline' => $actualite->title,
+        'description' => $actualiteDescription,
+        'datePublished' => $actualite->published_at?->toIso8601String(),
+        'image' => $actualiteImage,
+        'publisher' => [
+            '@type' => 'EducationalOrganization',
+            'name' => 'EPA_BURKINA',
+        ],
+    ]), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+@endphp
+<x-public-layout :title="$actualite->title" :description="$actualiteDescription" :image="$actualiteImage" :schema="$articleSchema">
     <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <a href="{{ route('actualites.index') }}" class="text-sm text-gray-500 hover:text-epa-red">&larr; Toutes les actualités</a>
 
@@ -6,7 +28,7 @@
         <h1 class="text-3xl font-bold mb-6">{{ $actualite->title }}</h1>
 
         @if ($actualite->image)
-            <img src="{{ asset('storage/'.$actualite->image) }}" alt="" class="w-full h-72 object-cover rounded-xl mb-8">
+            <img src="{{ asset('storage/'.$actualite->image) }}" alt="{{ $actualite->title }}" class="w-full h-72 object-cover rounded-xl mb-8">
         @endif
 
         <div class="prose max-w-none text-gray-700 whitespace-pre-line">{{ $actualite->content }}</div>

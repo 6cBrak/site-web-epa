@@ -1,4 +1,31 @@
-<x-public-layout :title="$formation->title">
+@php
+    use Illuminate\Support\Str;
+
+    $formationDescription = $formation->description
+        ? Str::limit(strip_tags($formation->description), 160)
+        : "Formation {$formation->title} ({$formation->programme->name}) chez EPA_BURKINA".($formation->duration ? " — durée : {$formation->duration}" : '').'.';
+
+    $formationImage = $formation->image ? asset('storage/'.$formation->image) : null;
+
+    $courseSchema = json_encode(array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'Course',
+        'name' => $formation->title,
+        'description' => $formationDescription,
+        'provider' => [
+            '@type' => 'EducationalOrganization',
+            'name' => 'EPA_BURKINA',
+            'sameAs' => url('/'),
+        ],
+        'offers' => $formation->price !== null ? [
+            '@type' => 'Offer',
+            'price' => (string) $formation->price,
+            'priceCurrency' => 'XOF',
+            'availability' => 'https://schema.org/InStock',
+        ] : null,
+    ]), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+@endphp
+<x-public-layout :title="$formation->title" :description="$formationDescription" :image="$formationImage" :schema="$courseSchema">
     <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <a href="{{ route('formations.index') }}" class="text-sm text-gray-500 hover:text-epa-red">&larr; Toutes les formations</a>
 
@@ -8,7 +35,7 @@
         <h1 class="text-3xl font-bold mt-2 mb-6">{{ $formation->title }}</h1>
 
         @if ($formation->image)
-            <img src="{{ asset('storage/'.$formation->image) }}" alt="" class="w-full h-72 object-cover rounded-xl mb-10">
+            <img src="{{ asset('storage/'.$formation->image) }}" alt="{{ $formation->title }}" class="w-full h-72 object-cover rounded-xl mb-10">
         @endif
 
         <div class="grid md:grid-cols-3 gap-10">
