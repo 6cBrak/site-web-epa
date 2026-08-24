@@ -14,6 +14,7 @@
                     <th class="px-4 py-3">Programme</th>
                     <th class="px-4 py-3">Durée</th>
                     <th class="px-4 py-3">Prix</th>
+                    <th class="px-4 py-3">Vues</th>
                     <th class="px-4 py-3">Statut</th>
                     <th class="px-4 py-3 text-right">Actions</th>
                 </tr>
@@ -25,6 +26,7 @@
                         <td class="px-4 py-3 text-gray-600">{{ $formation->programme->name_fr }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $formation->duration ?: '—' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $formation->price ? number_format($formation->price, 0, ',', ' ').' FCFA' : '—' }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ number_format($formation->views_count, 0, ',', ' ') }}</td>
                         <td class="px-4 py-3">
                             @if ($formation->published)
                                 <span class="inline-flex px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-800">Publiée</span>
@@ -44,7 +46,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-6 text-center text-gray-500">Aucune formation pour l'instant.</td>
+                        <td colspan="7" class="px-4 py-6 text-center text-gray-500">Aucune formation pour l'instant.</td>
                     </tr>
                 @endforelse
             </tbody>

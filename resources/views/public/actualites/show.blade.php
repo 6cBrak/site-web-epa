@@ -34,7 +34,7 @@
             <img src="{{ asset('storage/'.$actualite->image) }}" alt="{{ $actualite->title }}" class="w-full h-72 object-cover rounded-xl mb-8">
         @endif
 
-        <div class="prose max-w-none text-gray-700 whitespace-pre-line">{{ $actualite->content }}</div>
+        <div class="prose max-w-none text-gray-700 whitespace-pre-line text-justify leading-relaxed">{{ $actualite->content }}</div>
 
         <div class="mt-16 pt-10 border-t border-gray-200">
             <h2 class="text-xl font-bold mb-6">

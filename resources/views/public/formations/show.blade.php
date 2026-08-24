@@ -33,7 +33,19 @@
             <span class="text-xs font-medium text-epa-red uppercase">{{ $formation->programme->name }}</span>
             <x-share-buttons :title="$formation->title" />
         </div>
-        <h1 class="text-3xl font-bold mt-2 mb-6">{{ $formation->title }}</h1>
+        <h1 class="text-3xl font-bold mt-2 mb-2">{{ $formation->title }}</h1>
+
+        @if ($formation->views_count > 0)
+            <p class="text-xs text-gray-400 mb-6 flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-3.5 h-3.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+                {{ number_format($formation->views_count, 0, ',', ' ') }} {{ $formation->views_count > 1 ? 'consultations' : 'consultation' }}
+            </p>
+        @else
+            <div class="mb-6"></div>
+        @endif
 
         @if ($formation->image)
             <img src="{{ asset('storage/'.$formation->image) }}" alt="{{ $formation->title }}" class="w-full h-72 object-cover rounded-xl mb-10">
@@ -44,7 +56,7 @@
                 @if ($formation->description)
                     <div>
                         <h2 class="font-semibold mb-2">Description</h2>
-                        <p class="text-gray-600 text-sm leading-relaxed">{{ $formation->description }}</p>
+                        <p class="text-gray-600 text-sm leading-relaxed text-justify">{{ $formation->description }}</p>
                     </div>
                 @endif
 
