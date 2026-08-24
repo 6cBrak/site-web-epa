@@ -11,6 +11,7 @@
 <div
     x-data="assistantWidget()"
     x-init="init()"
+    x-on:open-assistant-chat.window="open = true; teaserVisible = false"
     class="fixed z-50 bottom-24 right-6 flex flex-col items-end"
 >
     {{-- Bouton flottant + bulle de relance --}}
