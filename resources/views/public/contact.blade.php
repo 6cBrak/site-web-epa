@@ -44,9 +44,14 @@
                                 </p>
                             @endif
 
+                            @php
+                                $mapQuery = ($antenne->latitude && $antenne->longitude)
+                                    ? $antenne->latitude.','.$antenne->longitude
+                                    : $antenne->name.', '.$antenne->address;
+                            @endphp
                             <div class="mt-3 rounded-lg overflow-hidden border border-gray-100">
                                 <iframe
-                                    src="https://maps.google.com/maps?q={{ urlencode($antenne->name.', '.$antenne->address) }}&output=embed"
+                                    src="https://maps.google.com/maps?q={{ urlencode($mapQuery) }}&z=16&output=embed"
                                     width="100%" height="160" style="border:0;" loading="lazy"
                                     referrerpolicy="no-referrer-when-downgrade"
                                     title="Carte — {{ $antenne->name }}">

@@ -14,7 +14,7 @@ class Antenne extends Model
     protected $fillable = [
         'name', 'slug', 'address', 'phone', 'email',
         'description_fr', 'description_en',
-        'latitude', 'longitude', 'active',
+        'latitude', 'longitude', 'map_url', 'active',
     ];
 
     protected $casts = [

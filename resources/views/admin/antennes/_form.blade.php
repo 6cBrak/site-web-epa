@@ -31,6 +31,22 @@
                        value="{{ old('address', $antenne?->address) }}" />
     </div>
 
+    <div class="md:col-span-2">
+        <x-input-label for="map_url" value="Lien Google Maps (optionnel, pour une carte précise)" />
+        <x-text-input id="map_url" name="map_url" type="url" class="mt-1 block w-full"
+                       value="{{ old('map_url', $antenne?->map_url) }}" placeholder="https://maps.app.goo.gl/..." />
+        <p class="mt-1 text-xs text-gray-500">
+            Sur Google Maps, recherche le lieu → « Partager » → « Copier le lien », puis colle-le ici.
+            Les coordonnées exactes sont extraites automatiquement — sans ce lien, la carte se base sur le champ Adresse ci-dessus (moins précis).
+        </p>
+        <x-input-error :messages="$errors->get('map_url')" class="mt-1" />
+        @if ($antenne?->latitude && $antenne?->longitude)
+            <p class="mt-1 text-xs text-green-700">✓ Coordonnées enregistrées : {{ $antenne->latitude }}, {{ $antenne->longitude }}</p>
+        @elseif ($antenne?->map_url)
+            <p class="mt-1 text-xs text-yellow-700">⚠ Lien enregistré mais coordonnées non trouvées — vérifie qu'il s'agit bien d'un lien de partage Google Maps.</p>
+        @endif
+    </div>
+
     <div>
         <x-input-label for="description_fr" value="Description (FR)" />
         <textarea id="description_fr" name="description_fr" rows="4"
