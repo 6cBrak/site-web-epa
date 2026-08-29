@@ -321,9 +321,9 @@ class AssistantController extends Controller
 
         if (filter_var($lead->contact, FILTER_VALIDATE_EMAIL)) {
             try {
-                Mail::to($lead->contact)->send(new AssistantLeadRecap($lead));
+                Mail::to($lead->contact)->queue(new AssistantLeadRecap($lead));
             } catch (\Throwable $e) {
-                Log::error('Échec envoi email récap prospect assistant', ['lead_id' => $lead->id, 'error' => $e->getMessage()]);
+                Log::error('Échec mise en file email récap prospect assistant', ['lead_id' => $lead->id, 'error' => $e->getMessage()]);
             }
         }
 
@@ -331,9 +331,9 @@ class AssistantController extends Controller
 
         if ($staffEmail) {
             try {
-                Mail::to($staffEmail)->send(new NouveauProspectChat($lead));
+                Mail::to($staffEmail)->queue(new NouveauProspectChat($lead));
             } catch (\Throwable $e) {
-                Log::error('Échec envoi notification équipe (nouveau prospect chat)', ['lead_id' => $lead->id, 'error' => $e->getMessage()]);
+                Log::error('Échec mise en file notification équipe (nouveau prospect chat)', ['lead_id' => $lead->id, 'error' => $e->getMessage()]);
             }
         }
 

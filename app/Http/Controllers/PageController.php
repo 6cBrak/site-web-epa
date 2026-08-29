@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactMessage;
 use App\Models\Actualite;
 use App\Models\Antenne;
 use App\Models\HeroSlide;
@@ -57,14 +58,7 @@ class PageController extends Controller
         $recipient = Antenne::where('active', true)->whereNotNull('email')->value('email');
 
         if ($recipient) {
-            Mail::raw(
-                "Nom: {$data['name']}\nEmail: {$data['email']}\nSujet: {$data['subject']}\n\n{$data['message']}",
-                function ($message) use ($recipient, $data) {
-                    $message->to($recipient)
-                        ->replyTo($data['email'], $data['name'])
-                        ->subject('[Contact site web] '.$data['subject']);
-                }
-            );
+            Mail::to($recipient)->queue(new ContactMessage($data));
         }
 
         return back()->with('status', 'Votre message a bien été envoyé. Nous vous répondrons rapidement.');

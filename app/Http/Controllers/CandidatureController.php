@@ -96,10 +96,10 @@ class CandidatureController extends Controller
 
         $recipient = Antenne::find($data['antenne_id'])?->email;
 
-        Mail::to($candidature->email)->send(new CandidatureConfirmee($candidature));
+        Mail::to($candidature->email)->queue(new CandidatureConfirmee($candidature));
 
         if ($recipient) {
-            Mail::to($recipient)->send(new NouvelleCandidature($candidature));
+            Mail::to($recipient)->queue(new NouvelleCandidature($candidature));
         }
 
         return redirect()->route('candidatures.confirmation', $candidature->tracking_token);
