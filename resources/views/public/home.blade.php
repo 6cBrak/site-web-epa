@@ -150,6 +150,21 @@
         </div>
     </section>
 
+    {{-- Événements à venir --}}
+    @if ($evenements->isNotEmpty())
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <h2 class="text-2xl font-bold text-center mb-12">{{ app()->getLocale() === 'en' ? 'Upcoming events' : 'Prochains événements' }}</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                @foreach ($evenements as $evenement)
+                    @include('public.evenements._card', ['evenement' => $evenement])
+                @endforeach
+            </div>
+            <div class="text-center mt-10">
+                <a href="{{ route('evenements.index') }}" class="text-epa-red text-sm font-medium hover:underline">{{ app()->getLocale() === 'en' ? 'All events' : 'Tous les événements' }} &rarr;</a>
+            </div>
+        </section>
+    @endif
+
     {{-- Actualités --}}
     @if ($actualites->isNotEmpty())
         <section class="bg-gray-50 py-20">

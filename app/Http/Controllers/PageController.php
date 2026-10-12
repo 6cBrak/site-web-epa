@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ContactMessage;
 use App\Models\Actualite;
 use App\Models\Antenne;
+use App\Models\Evenement;
 use App\Models\HeroSlide;
 use App\Models\KeyStat;
 use App\Models\Partenaire;
@@ -29,6 +30,11 @@ class PageController extends Controller
                 ->take(3)
                 ->get(),
             'partenaires' => Partenaire::where('active', true)->get(),
+            'evenements' => Evenement::published()
+                ->upcoming()
+                ->orderBy('starts_at')
+                ->take(3)
+                ->get(),
         ]);
     }
 

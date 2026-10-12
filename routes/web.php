@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\AssistantLeadController;
 use App\Http\Controllers\Admin\CandidatureController as AdminCandidatureController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\EvenementController;
+use App\Http\Controllers\Admin\EvenementInscriptionController;
 use App\Http\Controllers\Admin\FormationController;
 use App\Http\Controllers\Admin\FormationSessionController;
 use App\Http\Controllers\Admin\HeroSlideController;
@@ -18,6 +20,7 @@ use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\ActualitePublicController;
 use App\Http\Controllers\CandidatureController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\EvenementPublicController;
 use App\Http\Controllers\FormationPublicController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
@@ -41,6 +44,14 @@ Route::post('/actualites/{actualite:slug}/commentaires', [CommentController::cla
     ->middleware('throttle:5,1')
     ->name('actualites.comments.store');
 
+Route::get('/evenements', [EvenementPublicController::class, 'index'])->name('evenements.index');
+Route::get('/evenements/inscription/merci/{token}', [EvenementPublicController::class, 'confirmation'])->name('evenements.confirmation');
+Route::get('/evenements/{evenement:slug}', [EvenementPublicController::class, 'show'])->name('evenements.show');
+Route::get('/evenements/{evenement:slug}/calendrier.ics', [EvenementPublicController::class, 'ics'])->name('evenements.ics');
+Route::post('/evenements/{evenement:slug}/inscription', [EvenementPublicController::class, 'register'])
+    ->middleware('throttle:10,1')
+    ->name('evenements.register');
+
 Route::get('/inscription', [CandidatureController::class, 'create'])->name('candidatures.create');
 Route::post('/inscription', [CandidatureController::class, 'store'])->name('candidatures.store');
 Route::get('/inscription/merci/{candidature:tracking_token}', [CandidatureController::class, 'confirmation'])->name('candidatures.confirmation');
@@ -63,6 +74,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('actualites', ActualiteController::class)->except('show');
     Route::resource('team-members', TeamMemberController::class)->except('show');
     Route::resource('partenaires', PartenaireController::class)->except('show');
+    Route::resource('evenements', EvenementController::class)->except('show');
+    Route::get('evenements/{evenement}/inscriptions', [EvenementInscriptionController::class, 'index'])->name('evenements.inscriptions');
+    Route::get('evenements/{evenement}/inscriptions/export', [EvenementInscriptionController::class, 'export'])->name('evenements.inscriptions.export');
+    Route::delete('evenement-inscriptions/{inscription}', [EvenementInscriptionController::class, 'destroy'])->name('evenement-inscriptions.destroy');
     Route::resource('hero-slides', HeroSlideController::class)->except('show');
 
     Route::resource('comments', AdminCommentController::class)->only(['index', 'update', 'destroy']);

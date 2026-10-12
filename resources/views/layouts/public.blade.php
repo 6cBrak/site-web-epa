@@ -81,6 +81,7 @@
                 <a href="{{ route('about') }}" class="hover:text-epa-red {{ request()->routeIs('about') ? 'text-epa-red' : 'text-gray-700' }}">{{ Setting::text('nav_about') }}</a>
                 <a href="{{ route('formations.index') }}" class="hover:text-epa-red {{ request()->routeIs('formations.*') ? 'text-epa-red' : 'text-gray-700' }}">{{ Setting::text('nav_formations') }}</a>
                 <a href="{{ route('actualites.index') }}" class="hover:text-epa-red {{ request()->routeIs('actualites.*') ? 'text-epa-red' : 'text-gray-700' }}">{{ Setting::text('nav_actualites') }}</a>
+                <a href="{{ route('evenements.index') }}" class="hover:text-epa-red {{ request()->routeIs('evenements.*') ? 'text-epa-red' : 'text-gray-700' }}">{{ app()->getLocale() === 'en' ? 'Events' : 'Événements' }}</a>
                 <a href="{{ route('contact') }}" class="hover:text-epa-red {{ request()->routeIs('contact') ? 'text-epa-red' : 'text-gray-700' }}">{{ Setting::text('nav_contact') }}</a>
             </nav>
 
@@ -116,6 +117,7 @@
             <a href="{{ route('about') }}" @click="mobileOpen = false" class="px-3 py-2.5 rounded-md {{ request()->routeIs('about') ? 'text-epa-red bg-epa-red/5' : 'text-gray-700' }}">{{ Setting::text('nav_about') }}</a>
             <a href="{{ route('formations.index') }}" @click="mobileOpen = false" class="px-3 py-2.5 rounded-md {{ request()->routeIs('formations.*') ? 'text-epa-red bg-epa-red/5' : 'text-gray-700' }}">{{ Setting::text('nav_formations') }}</a>
             <a href="{{ route('actualites.index') }}" @click="mobileOpen = false" class="px-3 py-2.5 rounded-md {{ request()->routeIs('actualites.*') ? 'text-epa-red bg-epa-red/5' : 'text-gray-700' }}">{{ Setting::text('nav_actualites') }}</a>
+            <a href="{{ route('evenements.index') }}" @click="mobileOpen = false" class="px-3 py-2.5 rounded-md {{ request()->routeIs('evenements.*') ? 'text-epa-red bg-epa-red/5' : 'text-gray-700' }}">{{ app()->getLocale() === 'en' ? 'Events' : 'Événements' }}</a>
             <a href="{{ route('contact') }}" @click="mobileOpen = false" class="px-3 py-2.5 rounded-md {{ request()->routeIs('contact') ? 'text-epa-red bg-epa-red/5' : 'text-gray-700' }}">{{ Setting::text('nav_contact') }}</a>
 
             <div class="flex items-center gap-3 px-3 pt-2 text-xs font-semibold text-gray-400">

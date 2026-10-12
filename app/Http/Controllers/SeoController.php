@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actualite;
+use App\Models\Evenement;
 use App\Models\Formation;
 use Illuminate\Http\Response;
 
@@ -22,6 +23,7 @@ class SeoController extends Controller
             ['loc' => route('about'), 'changefreq' => 'monthly', 'priority' => '0.6'],
             ['loc' => route('formations.index'), 'changefreq' => 'weekly', 'priority' => '0.9'],
             ['loc' => route('actualites.index'), 'changefreq' => 'weekly', 'priority' => '0.7'],
+            ['loc' => route('evenements.index'), 'changefreq' => 'weekly', 'priority' => '0.7'],
             ['loc' => route('contact'), 'changefreq' => 'yearly', 'priority' => '0.5'],
             ['loc' => route('candidatures.create'), 'changefreq' => 'monthly', 'priority' => '0.8'],
         ];
@@ -40,6 +42,15 @@ class SeoController extends Controller
                 'loc' => route('actualites.show', $actualite),
                 'lastmod' => $actualite->updated_at->toAtomString(),
                 'changefreq' => 'monthly',
+                'priority' => '0.6',
+            ];
+        });
+
+        Evenement::published()->get(['slug', 'updated_at'])->each(function (Evenement $evenement) use (&$urls) {
+            $urls[] = [
+                'loc' => route('evenements.show', $evenement),
+                'lastmod' => $evenement->updated_at->toAtomString(),
+                'changefreq' => 'weekly',
                 'priority' => '0.6',
             ];
         });

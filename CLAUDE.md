@@ -53,6 +53,8 @@ Piège rencontré : les Mailables utilisant `<x-mail::message>` doivent déclare
 
 **Back-office (Phase 3) fonctionnel** : gestion des Candidatures (liste filtrable par formation/antenne/statut/recherche, détail, changement de statut, téléchargement CV, export CSV), CRUD Actualités (bilingue, image, publication), CRUD Équipe/Formateurs (photo, bio bilingue), CRUD Partenaires (logo, catégorie). Sidebar admin mise à jour en conséquence.
 
+**Événements** : modèles `Evenement` / `EvenementSession` (journées au choix, capacité par journée) / `EvenementInscription` (remplace le Google Form du Panel Digital). Public : `/evenements` (liste à venir/passés), fiche avec inscription, export `.ics`, schema.org `Event`, bloc sur l'accueil. Back-office : CRUD + liste des inscrits (stats, lien WhatsApp, export CSV). Tests : `tests/Feature/EvenementTest.php`.
+
 Reste à faire (Phase 4+) : pages publiques dédiées Actualités (liste/détail), Équipe et Partenaires (actuellement seul un teaser Actualités + logos Partenaires apparaissent sur l'accueil — pas de page dédiée), CRUD back-office pour Certificats/Codes promo/Chiffres clés (modèles déjà prêts), génération PDF de l'accusé de candidature, QR code certificats, traductions EN réelles (actuellement `title_en` = copie de `title_fr` dans le seed, et les pages publiques n'affichent que le contenu FR).
 
 ### Environnement local

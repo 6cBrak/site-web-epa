@@ -33,6 +33,7 @@
                         ['route' => 'admin.assistant-leads.index', 'match' => 'admin.assistant-leads.*', 'label' => 'Prospects (chat)'],
                         ['route' => 'admin.assistant-conversations.index', 'match' => 'admin.assistant-conversations.*', 'label' => 'Conversations (chat)'],
                         ['route' => 'admin.actualites.index', 'match' => 'admin.actualites.*', 'label' => 'Actualités'],
+                        ['route' => 'admin.evenements.index', 'match' => 'admin.evenements.*', 'label' => 'Événements'],
                         ['route' => 'admin.comments.index', 'match' => 'admin.comments.*', 'label' => 'Commentaires'],
                         ['route' => 'admin.team-members.index', 'match' => 'admin.team-members.*', 'label' => 'Équipe'],
                         ['route' => 'admin.partenaires.index', 'match' => 'admin.partenaires.*', 'label' => 'Partenaires'],
