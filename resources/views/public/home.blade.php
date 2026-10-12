@@ -190,19 +190,46 @@
         </section>
     @endif
 
-    {{-- Partenaires --}}
+    {{-- Partenaires : défilement continu, logos en couleur --}}
     @if ($partenaires->isNotEmpty())
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <h2 class="text-2xl font-bold text-center mb-2">{{ Setting::text('home_partenaires_title') }}</h2>
-            <p class="text-gray-500 text-center mb-10">{{ Setting::text('home_partenaires_subtitle') }}</p>
-            <div class="flex flex-wrap items-center justify-center gap-10">
-                @foreach ($partenaires as $partenaire)
-                    @if ($partenaire->logo)
-                        <img src="{{ asset('storage/'.$partenaire->logo) }}" alt="{{ $partenaire->name }}" class="h-12 object-contain grayscale hover:grayscale-0 transition" loading="lazy">
-                    @else
-                        <span class="text-sm font-medium text-gray-500">{{ $partenaire->name }}</span>
-                    @endif
-                @endforeach
+        @php
+            $repeat = max(1, (int) ceil(12 / $partenaires->count()));
+            $marqueeSeconds = max(25, $partenaires->count() * $repeat * 3);
+        @endphp
+        <section class="bg-gray-50 border-y border-gray-100 py-20">
+            <style>
+                @keyframes epa-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+                .epa-marquee-track { animation: epa-marquee {{ $marqueeSeconds }}s linear infinite; width: max-content; }
+                .epa-marquee:hover .epa-marquee-track { animation-play-state: paused; }
+                @media (prefers-reduced-motion: reduce) {
+                    .epa-marquee-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; }
+                    .epa-marquee-track [aria-hidden="true"] { display: none; }
+                }
+            </style>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center mb-3">{{ Setting::text('home_partenaires_title') }}</h2>
+                <p class="text-gray-600 text-center text-lg mb-12">{{ Setting::text('home_partenaires_subtitle') }}</p>
+            </div>
+
+            <div class="epa-marquee overflow-hidden" style="mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);">
+                <div class="epa-marquee-track flex items-center gap-6">
+                    @foreach ([false, true] as $isCopy)
+                        @for ($i = 0; $i < $repeat; $i++)
+                            @foreach ($partenaires as $partenaire)
+                                <div class="shrink-0 flex items-center justify-center w-44 h-28 bg-white rounded-xl border border-gray-100 shadow-sm px-4"
+                                     @if ($isCopy || $i > 0) aria-hidden="true" @endif>
+                                    @if ($partenaire->logo)
+                                        <img src="{{ asset('storage/'.$partenaire->logo) }}" alt="{{ ($isCopy || $i > 0) ? '' : $partenaire->name }}"
+                                             class="max-h-20 max-w-full object-contain" loading="lazy">
+                                    @else
+                                        <span class="text-sm font-semibold text-gray-600 text-center">{{ $partenaire->name }}</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        @endfor
+                    @endforeach
+                </div>
             </div>
         </section>
     @endif
