@@ -2,8 +2,8 @@
 # Sauvegarde automatique EPA_BURKINA : base MySQL (compressée, envoyée par email)
 # + fichiers téléversés (chaque dimanche, gardés sur le VPS uniquement).
 #
-# Cron conseillé (tous les jours à 02:00) :
-#   0 2 * * * /opt/epa/backup.sh >> /opt/epa-backups/backup.log 2>&1
+# Cron conseillé (tous les jours à 02:30) :
+#   30 2 * * * /opt/epa/backup.sh >> /opt/epa-backups/backup.log 2>&1
 #
 # Destinataire : variable BACKUP_EMAIL dans /opt/epa/.env
 
