@@ -25,15 +25,20 @@ echo -e "${YELLOW}→ Redémarrage...${NC}"
 docker compose up -d
 echo -e "${GREEN}✓ Container démarré${NC}"
 
-echo -e "${YELLOW}→ Migrations...${NC}"
-docker compose exec app php artisan migrate --force
-echo -e "${GREEN}✓ Migrations OK${NC}"
-
-echo -e "${YELLOW}→ Mise en cache...${NC}"
-docker compose exec app php artisan config:cache
-docker compose exec app php artisan route:cache
-docker compose exec app php artisan view:cache
-echo -e "${GREEN}✓ Cache OK${NC}"
+echo -e "${YELLOW}→ Attente du démarrage (migrations + cache lancés par l'entrypoint)...${NC}"
+ready=0
+for i in $(seq 1 60); do
+    if docker compose exec -T app supervisorctl status nginx 2>/dev/null | grep -q RUNNING; then
+        ready=1
+        break
+    fi
+    sleep 2
+done
+if [ "$ready" -ne 1 ]; then
+    echo "✗ Le container n'a pas démarré. Voir : docker compose logs --tail=60 app"
+    exit 1
+fi
+echo -e "${GREEN}✓ Application démarrée, migrations et cache appliqués${NC}"
 
 echo ""
 echo "╔══════════════════════════════════════════╗"
